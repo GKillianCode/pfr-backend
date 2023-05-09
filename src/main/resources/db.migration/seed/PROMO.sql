@@ -1,6 +1,6 @@
 INSERT INTO promo (name, students_number, is_active)
 VALUES
-    ('CDA', FLOOR(RAND() * 11) + 10, 1),
+    ('CDA', 13, 1),
     ('TLOG', FLOOR(RAND() * 11) + 10, 1),
     ('CDUI', FLOOR(RAND() * 11) + 10, 1),
     ('DATA_ALT', FLOOR(RAND() * 11) + 10, 1),
