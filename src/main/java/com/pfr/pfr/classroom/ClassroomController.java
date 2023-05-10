@@ -19,4 +19,9 @@ public class ClassroomController {
 
     @GetMapping("/all")
     public List<Classroom> getAllClassrooms() { return classroomService.getAll(); }
+
+    @GetMapping("/capacities")
+    public List<Integer> getAllDistinctCapacities() {
+        return classroomService.getAllDistinctCapacities();
+    }
 }

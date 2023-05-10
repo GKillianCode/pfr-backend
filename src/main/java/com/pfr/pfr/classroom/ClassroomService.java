@@ -15,4 +15,7 @@ public class ClassroomService {
 
     public List<Classroom> getAll() { return classroomRepository.findAll(); }
 
+    public List<Integer> getAllDistinctCapacities() {
+        return classroomRepository.findDistinctCapacitiesOrderByCapacityAsc();
+    }
 }
