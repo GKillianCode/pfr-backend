@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"firstname", "lastname", "email", "password", "is_active", "role_id"})
+@EqualsAndHashCode(of = {"firstname", "lastname", "email", "password", "is_active", "role"})
 public class User {
 
     @Id
@@ -34,17 +34,20 @@ public class User {
     @Column(name = "is_active")
     private Boolean is_active;
 
-    @Column(name = "role_id")
-    private Integer role_id;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
 
-    public User(String firstname, String lastname, String email, String password, Boolean is_active, Integer role_id) {
+    public User(String firstname, String lastname, String email, String password, Boolean is_active, Role role) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.password = password;
         this.is_active = is_active;
-        this.role_id = role_id;
+        this.role = role;
     }
+
+
 
 }
