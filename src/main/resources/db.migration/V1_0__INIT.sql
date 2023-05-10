@@ -66,7 +66,7 @@ CREATE TABLE `trainer_promo`(
 CREATE TABLE `event_type`(
     `id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
-    `is_exceptionnal_closure` TINYINT(1) NOT NULL DEFAULT '0',
+    `is_exceptional_closure` TINYINT(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`)
 );
 
@@ -119,16 +119,15 @@ INSERT INTO role (name) VALUES ('ROLE_ADMIN');
 INSERT INTO role (name) VALUES ('ROLE_SUPERADMIN');
 
 -- Insertion de plusieurs évènements
-INSERT INTO event_type (name, is_exceptionnal_closure) VALUES ('Hackathon', false);
-INSERT INTO event_type (name, is_exceptionnal_closure) VALUES ('Cours', false);
-INSERT INTO event_type (name, is_exceptionnal_closure) VALUES ('Travaux', true);
-INSERT INTO event_type (name, is_exceptionnal_closure) VALUES ('Jour ferié', true);
-INSERT INTO event_type (name, is_exceptionnal_closure) VALUES ('Conférence', false);
-INSERT INTO event_type (name, is_exceptionnal_closure) VALUES ('Congé', true);
-INSERT INTO event_type (name, is_exceptionnal_closure) VALUES ('Réunion', false);
-INSERT INTO event_type (name, is_exceptionnal_closure) VALUES ('Jury', false);
-INSERT INTO event_type (name, is_exceptionnal_closure) VALUES ('Entretien', false);
-
+INSERT INTO event_type (name, is_exceptional_closure) VALUES ('Hackathon', false);
+INSERT INTO event_type (name, is_exceptional_closure) VALUES ('Cours', false);
+INSERT INTO event_type (name, is_exceptional_closure) VALUES ('Travaux', true);
+INSERT INTO event_type (name, is_exceptional_closure) VALUES ('Jour ferié', true);
+INSERT INTO event_type (name, is_exceptional_closure) VALUES ('Conférence', false);
+INSERT INTO event_type (name, is_exceptional_closure) VALUES ('Congé', true);
+INSERT INTO event_type (name, is_exceptional_closure) VALUES ('Réunion', false);
+INSERT INTO event_type (name, is_exceptional_closure) VALUES ('Jury', false);
+INSERT INTO event_type (name, is_exceptional_closure) VALUES ('Entretien', false);
 
 -- Insertion des emplacements 'Tours Mame', 'Tours' et 'Orléans'
 INSERT INTO location (name, address, zip_code, city)
@@ -137,7 +136,6 @@ INSERT INTO location (name, address, zip_code, city)
 VALUES ('Tours', '32 Av. Marcel Dassault', '37000', 'Tours');
 INSERT INTO location (name, address, zip_code, city)
 VALUES ('Orléans', '122-124 Rue du Faubourg Bannier', '45000', 'Orléans');
-
 
 -- Insertion de la plage horaire 'lundi' en 'réservation possible'
 INSERT INTO slot (week_day, daytime, is_bookable)
