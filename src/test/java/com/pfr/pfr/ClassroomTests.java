@@ -42,4 +42,17 @@ public class ClassroomTests {
         Location location = new Location("Tours Mame", "49 Bd Preuilly", "37000", "Tours");
         assert classrooms.contains(new Classroom("Salle 2", 20, location, true));
     }
+
+    @Test
+    void testGetAllDistinctCapacities() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/classroom/capacities");
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        String contentAsString = mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+
+        List<Integer> capacities = Arrays.asList(objectMapper.readValue(contentAsString, Integer[].class));
+        assert capacities.equals(Arrays.asList(15, 20, 22, 24));
+    }
+
 }
