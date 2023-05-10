@@ -10,4 +10,8 @@ public interface ClassroomRepository extends JpaRepository<Classroom, Integer> {
 
     @Query("SELECT DISTINCT c.capacity FROM Classroom c ORDER BY c.capacity ASC")
     List<Integer> findDistinctCapacitiesOrderByCapacityAsc();
+
+    List<Classroom> findByLocationId(Integer locationId);
+    List<Classroom> findByCapacity(Integer capacity);
+
 }

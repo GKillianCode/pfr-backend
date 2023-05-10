@@ -55,4 +55,30 @@ public class ClassroomTests {
         assert capacities.equals(Arrays.asList(15, 20, 22, 24));
     }
 
+    @Test
+    void testGetClassroomsByLocation() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/classroom/all/filter/location?id=1");
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        String contentAsString = mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+
+        List<Classroom> classrooms = Arrays.asList(objectMapper.readValue(contentAsString, Classroom[].class));
+        Location location = new Location("Tours Mame", "49 Bd Preuilly", "37000", "Tours");
+        assert classrooms.contains(new Classroom("Salle 2", 20, location, true));
+    }
+
+    @Test
+    void testGetClassroomsByCapacity() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/classroom/all/filter/capacity?number=20");
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        String contentAsString = mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+
+        List<Classroom> classrooms = Arrays.asList(objectMapper.readValue(contentAsString, Classroom[].class));
+        Location location = new Location("Tours Mame", "49 Bd Preuilly", "37000", "Tours");
+        assert classrooms.contains(new Classroom("Salle 2", 20, location, true));
+    }
+
 }
