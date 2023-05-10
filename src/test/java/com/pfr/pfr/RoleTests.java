@@ -1,14 +1,13 @@
 package com.pfr.pfr;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pfr.pfr.entities.Role;
-import com.pfr.pfr.entities.User;
-import com.pfr.pfr.user.UserService;
+import com.pfr.pfr.role.RoleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -19,10 +18,9 @@ import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserTests {
-
+public class RoleTests {
     @Autowired
-    private UserService userService;
+    private RoleService roleService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -31,21 +29,26 @@ public class UserTests {
     private ObjectMapper objectMapper;
 
     @Test
-    void testGetAllUsers() {
-        assert userService
+    void testGetAllRoles() {
+
+        System.out.println(roleService.getAll());
+
+        assert roleService
                 .getAll()
-                .contains(new User("John", "Doe", "johndoe@gmail.com", "root", true, new Role("ROLE_FORMATEUR")));
+                .contains(new Role("ROLE_ADMIN"));
     }
 
     @Test
-    void testGetAllUsersByAPI() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get("/api/user/all");
+    void testGetAllRolesByAPI() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/role/all");
         ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
         String contentAsString = mockMvc.perform(request)
                 .andExpect(resultStatus)
                 .andReturn().getResponse().getContentAsString();
 
-        List<User> users = Arrays.asList(objectMapper.readValue(contentAsString, User[].class));
-        assert users.contains(new User("John", "Doe", "johndoe@gmail.com", "root", true, new Role("ROLE_FORMATEUR")));
+        List<Role> roles = Arrays.asList(objectMapper.readValue(contentAsString, Role[].class));
+        assert roles.contains(new Role("ROLE_ADMIN"));
     }
+
+
 }
