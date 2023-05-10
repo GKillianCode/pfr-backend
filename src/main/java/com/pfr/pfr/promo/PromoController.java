@@ -4,16 +4,14 @@ import com.pfr.pfr.entities.Promo;
 import com.pfr.pfr.promo.dto.PromoWithEvents;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/promo")
 @Validated
+@CrossOrigin(origins = {"${app.api.settings.cross-origin.url}"})
 public class PromoController {
 
     @Autowired
