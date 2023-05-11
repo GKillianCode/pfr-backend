@@ -13,4 +13,9 @@ public class BookingService {
     private BookingRepository bookingRepository;
 
     public List<Booking> getAll() { return bookingRepository.findAll(); }
+
+    public List<Booking> getBookingsForPromo(Integer promoId)
+    {
+        return bookingRepository.findByPromoId(promoId);
+    }
 }
