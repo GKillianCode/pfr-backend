@@ -50,7 +50,7 @@ public class BookingTests {
                 new EventType("Hackathon", false),
                 new Promo("CDA_2_2022", 13, true));
 
-        User johnDoe = new User("John", "Doe", "johndoe@gmail.com", "root", true, 1);
+        User johnDoe = new User("John", "Doe", "johndoe@gmail.com", "root", true, new Role("ROLE_FORMATEUR"));
 
         Booking booking = new Booking(
                 LocalDate.of(2023, 5, 10),

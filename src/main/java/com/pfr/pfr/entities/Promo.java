@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "promo")
 @Getter
@@ -27,6 +29,9 @@ public class Promo {
 
     @Column(name="is_active")
     private Boolean isActive;
+
+//    @ManyToMany(mappedBy = "promos")
+//    private List<User> users;
 
     public Promo(String name, Integer studentsNumber, Boolean isActive) {
         this.name = name;
