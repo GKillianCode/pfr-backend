@@ -1,9 +1,12 @@
 package com.pfr.pfr.promo;
 
+import com.pfr.pfr.booking.BookingService;
+import com.pfr.pfr.entities.Booking;
 import com.pfr.pfr.entities.Event;
 import com.pfr.pfr.entities.Promo;
 import com.pfr.pfr.entities.repository.PromoRepository;
 import com.pfr.pfr.event.EventService;
+import com.pfr.pfr.promo.dto.PromoWithBookings;
 import com.pfr.pfr.promo.dto.PromoWithEvents;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,10 @@ public class PromoService {
 
     @Autowired
     private EventService eventService;
+
+    @Autowired
+    private BookingService bookingService;
+
     public List<Promo> getAll() {
         return promoRepository.findAll();
     }
@@ -29,6 +36,24 @@ public class PromoService {
         if (promo.isPresent()){
             List<Event> events = eventService.getEventsForPromo(promoId);
             return new PromoWithEvents(promo.get(), events);
+        }
+        throw new EntityNotFoundException("Promo with ID %d not found".formatted(promoId));
+    }
+
+    public PromoWithBookings getPromoWithBookings(Integer promoId)
+    {
+        Optional<Promo> promo = promoRepository.findById(promoId);
+        if(promo.isPresent()) {
+            List<Booking> bookings = bookingService.getBookingsForPromo(promoId);
+            return new PromoWithBookings(promo.get(), bookings);
+        }
+        throw new EntityNotFoundException("Promo with ID %d not found".formatted(promoId));
+    }
+
+    public Promo getPromoById(Integer promoId) {
+        Optional<Promo> promo = promoRepository.findById(promoId);
+        if(promo.isPresent()) {
+            return promo.get();
         }
         throw new EntityNotFoundException("Promo with ID %d not found".formatted(promoId));
     }
