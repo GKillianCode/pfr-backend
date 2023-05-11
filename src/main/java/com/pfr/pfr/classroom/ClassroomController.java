@@ -35,4 +35,10 @@ public class ClassroomController {
     {
         return classroomService.getClassroomsByCapacity(number);
     }
+
+    @PostMapping("/filter")
+    public List<Classroom> filterSalle(@RequestBody Classroom json){
+        return classroomService.filterClassroom(json);
+    }
+
 }
