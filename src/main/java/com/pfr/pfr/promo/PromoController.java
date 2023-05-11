@@ -25,11 +25,39 @@ public class PromoController {
     @Autowired
     private PromoService promoService;
 
+    @Operation(summary = "Get all promos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Promo.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "404", description = "Promos not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class })))
+    })
     @GetMapping("/all")
     public List<Promo> getAllPromos() {
         return promoService.getAll();
     }
 
+    @Operation(summary = "Get events by promo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Promo.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "404", description = "Events by promo not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class })))
+    })
     @GetMapping("/{id}/events")
     public PromoWithEvents getPromoWithEvents(@PathVariable("id") Integer promoId) {
         return promoService.getPromoWithEvents(promoId);
