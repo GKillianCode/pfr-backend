@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "user")
 @Getter
@@ -36,6 +38,15 @@ public class User {
 
     @Column(name = "role_id")
     private Integer role_id;
+
+//    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinTable(
+//            name = "trainer_promo",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "promo_id")
+//    )
+//    private List<Promo> promos;
+
 
 
     public User(String firstname, String lastname, String email, String password, Boolean is_active, Integer role_id) {

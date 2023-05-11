@@ -6,13 +6,15 @@ import lombok.*;
 import java.util.List;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode(of = {"user", "promos"})
-public class UserWithPromo {
+public class UserWithPromos {
     private User user;
     private List<Promo> promos;
 
-
+    public UserWithPromos(User user, List<Promo> promos) {
+        this.user = user;
+        this.promos = promos;
+    }
 }
