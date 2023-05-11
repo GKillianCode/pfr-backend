@@ -60,9 +60,9 @@ public class UserTests {
                 .andExpect(resultStatus)
                 .andReturn().getResponse().getContentAsString();
 
-        User user = new User("John", "Doe", "johndoe@gmail.com", "root", true, 1);
+        User user = new User("John", "Doe", "johndoe@gmail.com", "root", true, new Role("ROLE_FORMATEUR"));
         Promo promo1 = new Promo("CDA", 13, true);
-        Promo promo9 = new Promo("CDA_1_2021", 20, false);
+        Promo promo9 = new Promo("CDA_1_2021", 6, false);
         List<Promo> listPromos = new ArrayList<Promo>();
         listPromos.add(promo1);
         listPromos.add(promo9);
