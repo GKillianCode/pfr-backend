@@ -81,4 +81,23 @@ public class ClassroomTests {
         assert classrooms.contains(new Classroom("Salle 2", 20, location, true));
     }
 
+    @Test
+    void testFilterClassroomContaining() throws Exception {
+        Classroom classroom = classroomService.getClassroomsByCapacity(20).get(0);
+        Classroom classroom2 = new Classroom();
+        classroom2.setCapacity(20);
+        classroom2.setLocation(classroom.getLocation());
+
+        RequestBuilder request = MockMvcRequestBuilders.post("/api/classroom/filter")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(classroom2));
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        String contentAsString = mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+
+        List<Classroom> classrooms = Arrays.asList(objectMapper.readValue(contentAsString, Classroom[].class));
+        assert classrooms.contains(classroom);
+    }
+
 }
