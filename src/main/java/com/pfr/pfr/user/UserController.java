@@ -22,8 +22,14 @@ public class UserController {
     @GetMapping("/all")
     public List<User> getAllUsers() { return userService.getAll(); }
 
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable("id") Integer userId) {
+        return userService.getById(userId);
+    }
+
     @GetMapping("/{id}/promos")
     public UserWithPromos getUserWithPromos(@PathVariable("id") Integer userId) {
         return userService.getUserWithPromos(userId);
     }
+
 }
