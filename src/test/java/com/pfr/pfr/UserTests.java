@@ -48,4 +48,17 @@ public class UserTests {
         List<User> users = Arrays.asList(objectMapper.readValue(contentAsString, User[].class));
         assert users.contains(new User("John", "Doe", "johndoe@gmail.com", "root", true, new Role("ROLE_FORMATEUR")));
     }
+
+    @Test
+    void testConnectUser() throws Exception {
+        User user = new User("John", "Doe", "johndoe@gmail.com", "root", true, new Role("ROLE_FORMATEUR"));
+        RequestBuilder request = MockMvcRequestBuilders.post("/api/user/connect")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(user));
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        String contentAsString = mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+        assert contentAsString.equals("lorem ipsum connected");
+    }
 }
