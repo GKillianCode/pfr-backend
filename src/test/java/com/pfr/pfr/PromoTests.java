@@ -1,11 +1,11 @@
 package com.pfr.pfr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pfr.pfr.entities.Event;
-import com.pfr.pfr.entities.EventType;
-import com.pfr.pfr.entities.Location;
-import com.pfr.pfr.entities.Promo;
+import com.pfr.pfr.booking.BookingService;
+import com.pfr.pfr.entities.*;
 import com.pfr.pfr.location.LocationService;
+import com.pfr.pfr.promo.PromoService;
+import com.pfr.pfr.promo.dto.PromoWithBookings;
 import com.pfr.pfr.promo.dto.PromoWithEvents;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +34,11 @@ public class PromoTests {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private PromoService promoService;
+
+    @Autowired
+    private BookingService bookingService;
 
     @Test
     void testGetAllPromoByAPI() throws Exception {
@@ -71,5 +76,25 @@ public class PromoTests {
                     cda));
 
         assert promoWithEvent.equals(new PromoWithEvents(cda, cdaEvents));
+    }
+
+    @Test
+    void testGetPromoWithBookings() throws Exception
+    {
+        int promoId = 1;
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/promo/"+promoId+"/bookings");
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        String contentAsString = mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+
+        PromoWithBookings promoWithBookingsByApi = objectMapper.readValue(contentAsString, PromoWithBookings.class);
+
+        Promo promo1 = promoService.getPromoById(promoId);
+        List<Booking> bookings = bookingService.getBookingsForPromo(promoId);
+        PromoWithBookings promoWithBookings = new PromoWithBookings(promo1, bookings);
+
+        assert promoWithBookings.equals(promoWithBookingsByApi);
+
     }
 }
