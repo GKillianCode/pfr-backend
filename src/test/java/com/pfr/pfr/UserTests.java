@@ -5,6 +5,7 @@ import com.pfr.pfr.entities.Role;
 import com.pfr.pfr.entities.Promo;
 import com.pfr.pfr.entities.User;
 import com.pfr.pfr.user.UserService;
+import com.pfr.pfr.user.dto.UserWithBookings;
 import com.pfr.pfr.user.dto.UserWithPromos;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,5 +84,24 @@ public class UserTests {
                 .andExpect(resultStatus)
                 .andReturn().getResponse().getContentAsString();
         assert contentAsString.equals("lorem ipsum connected");
+    }
+
+    @Test
+    public void getUserWithBookings() {
+        UserWithBookings user = userService.getUserWithBookings(2);
+        assert user.getUser().getFirstname().equals("John");
+    }
+
+    @Test
+    public void getUserWithBookingsAPI() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/user/2/bookings");
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        String contentAsString = mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+
+        UserWithBookings userWithBookings = objectMapper.readValue(contentAsString, UserWithBookings.class);
+
+        assert userWithBookings.getUser().getFirstname().equals("John");
     }
 }

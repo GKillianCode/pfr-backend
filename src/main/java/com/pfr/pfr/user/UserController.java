@@ -2,6 +2,7 @@ package com.pfr.pfr.user;
 
 import com.pfr.pfr.entities.User;
 import com.pfr.pfr.exceptions.ExceptionMessage;
+import com.pfr.pfr.user.dto.UserWithBookings;
 import com.pfr.pfr.user.dto.UserWithPromos;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -101,5 +102,26 @@ public class UserController {
     @PostMapping("/connect")
     public String connect(@RequestBody User user) {
         return userService.connect(user.getEmail(), user.getPassword());
+    }
+
+    @Operation(summary = "Get a user and its bookings")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserWithBookings.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "409", description = "User with same name already exists", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class })))
+    })
+    @GetMapping("/{id}/bookings")
+    public UserWithBookings getUserWithBookings(@PathVariable("id") Integer userId) {
+        return userService.getUserWithBookings(userId);
     }
 }

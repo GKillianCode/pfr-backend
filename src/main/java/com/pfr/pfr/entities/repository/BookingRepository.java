@@ -8,9 +8,15 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
+import java.util.List;
+
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     @Query("SELECT b FROM Booking b WHERE b.event.promo.id = :promoId")
     List<Booking> findByPromoId(@Param("promoId") Integer promoId);
+
+
+    public List<Booking> findAllByUser_Id(Integer id);
+
 
 }
