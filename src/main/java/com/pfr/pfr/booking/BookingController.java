@@ -1,9 +1,8 @@
-package com.pfr.pfr.location;
+package com.pfr.pfr.booking;
 
-import com.pfr.pfr.entities.Location;
+import com.pfr.pfr.entities.Booking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,15 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/location")
+@RequestMapping("/api/booking")
 @Validated
-@CrossOrigin(origins = {"${app.api.settings.cross-origin.url}"})
-public class LocationController {
+public class BookingController {
 
     @Autowired
-    private LocationService locationService;
+    private BookingService bookingService;
 
     @GetMapping("/all")
-    public List<Location> getAllLocations() { return locationService.getAll(); }
-
+    public List<Booking> getAllBookings() {
+        return bookingService.getAll();
+    }
 }

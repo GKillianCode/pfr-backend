@@ -1,6 +1,6 @@
-package com.pfr.pfr.location;
+package com.pfr.pfr.event;
 
-import com.pfr.pfr.entities.Location;
+import com.pfr.pfr.entities.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,15 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/location")
+@RequestMapping("/api/event")
 @Validated
 @CrossOrigin(origins = {"${app.api.settings.cross-origin.url}"})
-public class LocationController {
+public class EventController {
 
     @Autowired
-    private LocationService locationService;
+    EventService eventService;
 
     @GetMapping("/all")
-    public List<Location> getAllLocations() { return locationService.getAll(); }
-
+    public List<Event> getAllEvents() { return eventService.getAll(); }
 }
