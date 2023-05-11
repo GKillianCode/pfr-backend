@@ -18,4 +18,12 @@ public class ClassroomService {
     public List<Integer> getAllDistinctCapacities() {
         return classroomRepository.findDistinctCapacitiesOrderByCapacityAsc();
     }
+
+    public List<Classroom> getClassroomsByLocationId(Integer locationId) {
+        return classroomRepository.findByLocationId(locationId);
+    }
+
+    public List<Classroom> getClassroomsByCapacity(Integer capacity) {
+        return classroomRepository.findByCapacity(capacity);
+    }
 }

@@ -1,6 +1,7 @@
 package com.pfr.pfr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pfr.pfr.entities.Role;
 import com.pfr.pfr.entities.Promo;
 import com.pfr.pfr.entities.User;
 import com.pfr.pfr.user.UserService;
@@ -36,7 +37,7 @@ public class UserTests {
     void testGetAllUsers() {
         assert userService
                 .getAll()
-                .contains(new User("Jonh", "Doe", "jonhdoe@gmail.com", "root", true, 1));
+                .contains(new User("John", "Doe", "johndoe@gmail.com", "root", true, new Role("ROLE_FORMATEUR")));
     }
 
     @Test
@@ -48,7 +49,7 @@ public class UserTests {
                 .andReturn().getResponse().getContentAsString();
 
         List<User> users = Arrays.asList(objectMapper.readValue(contentAsString, User[].class));
-        assert users.contains(new User("Jonh", "Doe", "jonhdoe@gmail.com", "root", true, 1));
+        assert users.contains(new User("John", "Doe", "johndoe@gmail.com", "root", true, new Role("ROLE_FORMATEUR")));
     }
 
     @Test
