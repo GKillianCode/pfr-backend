@@ -1,6 +1,6 @@
-package com.pfr.pfr.role;
+package com.pfr.pfr.booking;
 
-import com.pfr.pfr.entities.Role;
+import com.pfr.pfr.entities.Booking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,14 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/role")
+@RequestMapping("/api/booking")
 @Validated
 @CrossOrigin(origins = {"${app.api.settings.cross-origin.url}"})
-public class RoleController {
+public class BookingController {
 
     @Autowired
-    private RoleService roleService;
+    private BookingService bookingService;
 
     @GetMapping("/all")
-    public List<Role> getAllRoles() { return roleService.getAll(); }
+    public List<Booking> getAllBookings() {
+        return bookingService.getAll();
+    }
 }

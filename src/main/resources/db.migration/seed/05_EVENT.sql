@@ -128,4 +128,4 @@ VALUES(
     'Exercez-vous sur les concepts',
     2,
     20,
-    1)
+    1);
