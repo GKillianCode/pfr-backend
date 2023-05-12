@@ -3,6 +3,7 @@ package com.pfr.pfr;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pfr.pfr.classroom.ClassroomService;
 import com.pfr.pfr.entities.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,6 +13,8 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,7 +30,18 @@ public class ConflictTests {
 
     @Autowired
     private ObjectMapper objectMapper;
-
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+    @BeforeEach
+    public void setUp() {
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(webApplicationContext)
+                .addFilter((request, response, chain) -> {
+                    response.setCharacterEncoding("UTF-8"); // this is crucial
+                    chain.doFilter(request, response);
+                }, "/*")
+                .build();
+    }
     @Test
     void testGetAllConflictsByAPI() throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.get("/api/conflict/all");

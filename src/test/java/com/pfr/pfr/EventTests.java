@@ -6,6 +6,7 @@ import com.pfr.pfr.entities.EventType;
 import com.pfr.pfr.entities.Promo;
 import com.pfr.pfr.event_type.EventTypeService;
 import com.pfr.pfr.location.LocationService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,6 +16,8 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +31,18 @@ public class EventTests {
 
     @Autowired
     private ObjectMapper objectMapper;
-
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+    @BeforeEach
+    public void setUp() {
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(webApplicationContext)
+                .addFilter((request, response, chain) -> {
+                    response.setCharacterEncoding("UTF-8"); // this is crucial
+                    chain.doFilter(request, response);
+                }, "/*")
+                .build();
+    }
     @Test
     void testGetAllEventByAPI() throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.get("/api/event/all");
