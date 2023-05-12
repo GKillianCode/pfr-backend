@@ -1,5 +1,6 @@
 package com.pfr.pfr.exceptions;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.hibernate.exception.ConstraintViolationException;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.management.InstanceAlreadyExistsException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -29,5 +31,11 @@ public class ExceptionHandlerControllerAdvice {
     public ResponseEntity<ExceptionMessage> constraintViolationExceptionHandler(HttpServletRequest request, ConstraintViolationException exception) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(request.getRequestURI(), exception.getMessage(), exception.getClass().getName());
         return new ResponseEntity<>(exceptionMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InstanceAlreadyExistsException.class)
+    public ResponseEntity<ExceptionMessage> instanceAlreadyExistsException(HttpServletRequest request,InstanceAlreadyExistsException exception) {
+        ExceptionMessage exceptionMessage = new ExceptionMessage(request.getRequestURI(), exception.getMessage(), exception.getClass().getName());
+        return new ResponseEntity<>(exceptionMessage, HttpStatus.CONFLICT);
     }
 }
