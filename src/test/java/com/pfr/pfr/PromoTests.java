@@ -49,6 +49,8 @@ public class PromoTests {
 
     @Test
     void testGetAllPromoByAPI() throws Exception {
+        Promo promoToCheck = promoService.getAll().get(0);
+
         RequestBuilder request = MockMvcRequestBuilders.get("/api/promo/all");
         ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
         String contentAsString = mockMvc.perform(request)
@@ -56,7 +58,7 @@ public class PromoTests {
                 .andReturn().getResponse().getContentAsString();
 
         List<Promo> promos = Arrays.asList(objectMapper.readValue(contentAsString, Promo[].class));
-        assert promos.contains(new Promo("CDA", 13, true));
+        assert promos.contains(promoToCheck);
     }
 
     @Test
@@ -142,6 +144,7 @@ public class PromoTests {
     }
 
     @Test
+    @Transactional
     void testUpdatePromo() throws Exception {
         Promo promoToUpdate = promoService.getAll().get(0);
         String promoName = promoToUpdate.getName();

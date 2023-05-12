@@ -47,11 +47,6 @@ public class PromoController {
         return promoService.getAll();
     }
 
-    @GetMapping("/{id}")
-    public Promo getPromoById(@PathVariable("id") Integer promoId) {
-        return promoService.getById(promoId);
-    }
-
     @Operation(summary = "Get events by promo")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
