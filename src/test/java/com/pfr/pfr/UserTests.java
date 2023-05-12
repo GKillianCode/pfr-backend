@@ -102,13 +102,13 @@ public class UserTests {
 
     @Test
     public void getUserWithBookings() {
-        UserWithBookings user = userService.getUserWithBookings(1);
+        UserWithBookings user = userService.getUserWithBookings(1, 0, 10);
         assert user.getUser().getFirstname().equals("John");
     }
 
     @Test
     public void getUserWithBookingsAPI() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get("/api/user/1/bookings");
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/user/1/bookings?pageNumber=0&itemsPerPage=10");
         ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
         String contentAsString = mockMvc.perform(request)
                 .andExpect(resultStatus)

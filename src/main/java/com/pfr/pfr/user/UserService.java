@@ -10,8 +10,9 @@ import com.pfr.pfr.user.dto.UserWithBookings;
 import com.pfr.pfr.user.dto.UserWithPromos;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,11 +52,16 @@ public class UserService {
 
     }
 
-    public UserWithBookings getUserWithBookings(int userId) {
+    public UserWithBookings getUserWithBookings(int userId,Integer pageNumber, Integer itemsPerPage) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
-            List<Booking> listPromos = bookingRepository.findAllByUser_Id(userId);
-            return new UserWithBookings(user.get(), listPromos);
+
+            Pageable pageable = PageRequest.of(pageNumber, itemsPerPage);
+            List<Booking> listPromos = bookingRepository.findAllByUserIdOrderByBookingDateAscSlotAsc(userId, pageable);
+
+            Integer totalBookingCount = bookingRepository.countByUserId(userId);
+
+            return new UserWithBookings(user.get(), listPromos, totalBookingCount);
         }
         throw new EntityNotFoundException("User with ID %d not found".formatted(userId));
 

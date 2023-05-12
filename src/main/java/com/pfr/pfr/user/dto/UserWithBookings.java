@@ -12,9 +12,12 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"user", "bookings"})
+@EqualsAndHashCode(of = {"user", "bookings", "totalBookingCount"})
 public class UserWithBookings {
+
     private User user;
+
     private List<Booking> bookings;
 
+    private Integer totalBookingCount;
 }

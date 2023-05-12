@@ -121,7 +121,7 @@ public class UserController {
                     ExceptionMessage.class })))
     })
     @GetMapping("/{id}/bookings")
-    public UserWithBookings getUserWithBookings(@PathVariable("id") Integer userId) {
-        return userService.getUserWithBookings(userId);
+    public UserWithBookings getUserWithBookings(@PathVariable("id") Integer userId, @RequestParam Integer pageNumber, @RequestParam Integer itemsPerPage) {
+        return userService.getUserWithBookings(userId, pageNumber, itemsPerPage);
     }
 }
