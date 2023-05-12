@@ -4,6 +4,7 @@ import com.pfr.pfr.entities.Promo;
 import com.pfr.pfr.entities.User;
 import com.pfr.pfr.exceptions.ExceptionMessage;
 import com.pfr.pfr.promo.dto.PromoWithBookings;
+import com.pfr.pfr.promo.dto.PromoDTO;
 import com.pfr.pfr.promo.dto.PromoWithEvents;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,9 +12,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.InstanceAlreadyExistsException;
 import java.util.List;
 
 @RestController
@@ -99,5 +102,18 @@ public class PromoController {
     @GetMapping("/{id}")
     public Promo getPromoById(@PathVariable("id") Integer promoId) {
         return promoService.getPromoById(promoId);
+    }
+
+    @PostMapping("")
+    public ResponseEntity<Promo> savePromo(@RequestBody Promo newPromo) throws InstanceAlreadyExistsException {
+        return ResponseEntity.ok(promoService.savePromo(newPromo));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Promo> updatePromo(
+            @PathVariable("id") Integer promoId ,
+            @RequestBody PromoDTO promoDTO
+    ) throws InstanceAlreadyExistsException {
+        return ResponseEntity.ok(promoService.updatePromo(promoId, promoDTO));
     }
 }
