@@ -14,6 +14,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,4 +82,23 @@ public class UserService {
         return null;
     }
 
+    public UserWithBookings getUserWithBookingsByWeek(int userId,Integer weekNumber, Integer year) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+
+            LocalDate startDate = LocalDate.ofYearDay(year, 1)
+                    .with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY))
+                    .plusWeeks(weekNumber - 1);
+
+            LocalDate endDate = startDate.plusDays(6);
+
+            List<Booking> listPromos = bookingRepository.findAllByUserIdAndBookingDateBetweenOrderByBookingDateAscSlotAsc(userId, startDate, endDate);
+
+            Integer totalBookingCount = bookingRepository.countByUserId(userId);
+
+            return new UserWithBookings(user.get(), listPromos, totalBookingCount);
+        }
+        throw new EntityNotFoundException("User with ID %d not found".formatted(userId));
+
+    }
 }

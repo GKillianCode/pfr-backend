@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -19,8 +20,8 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     public Integer countByUserId(Integer userId);
     public List<Booking> findAllByUserIdOrderByBookingDateAscSlotAsc(Integer id, Pageable pageable);
 
+    List<Booking> findAllByUserIdAndBookingDateBetweenOrderByBookingDateAscSlotAsc(Integer id, LocalDate startDate, LocalDate endDate);
+
     public List<Booking> findAllByEventId(Integer id);
-
-
 
 }
