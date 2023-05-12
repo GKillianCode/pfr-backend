@@ -14,4 +14,8 @@ public class ConflictService {
     private ConflictRepository conflictRepository;
 
     public List<Conflict> getAll() { return conflictRepository.findAll(); }
+
+    public List<Conflict> getConflictsForBooking(Integer bookingId) {
+        return conflictRepository.findByBookingId(bookingId);
+    }
 }

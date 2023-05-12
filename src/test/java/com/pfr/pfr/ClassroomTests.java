@@ -2,6 +2,9 @@ package com.pfr.pfr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pfr.pfr.classroom.ClassroomService;
+import com.pfr.pfr.entities.Classroom;
+import com.pfr.pfr.entities.Location;
+import org.junit.jupiter.api.BeforeEach;
 import com.pfr.pfr.classroom.dto.ClassroomWithBookings;
 import com.pfr.pfr.entities.*;
 import org.junit.jupiter.api.Test;
@@ -13,6 +16,8 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,7 +36,18 @@ public class ClassroomTests {
 
     @Autowired
     private ObjectMapper objectMapper;
-
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+    @BeforeEach
+    public void setUp() {
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(webApplicationContext)
+                .addFilter((request, response, chain) -> {
+                    response.setCharacterEncoding("UTF-8"); // this is crucial
+                    chain.doFilter(request, response);
+                }, "/*")
+                .build();
+    }
     @Test
     void testGetAllClassroomsByAPI() throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.get("/api/classroom/all");
