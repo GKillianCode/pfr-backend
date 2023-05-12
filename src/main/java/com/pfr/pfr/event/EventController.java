@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.InstanceAlreadyExistsException;
 import java.util.List;
 
 @RestController
@@ -57,5 +58,29 @@ public class EventController {
     @GetMapping("/{id}/bookings")
     public EventWithBookings getEventWithBookings(@PathVariable("id") Integer eventId) {
         return eventService.getEventWithBookings(eventId);
+    }
+
+    @Operation(summary = "add a new event")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Event.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "404", description = "Event not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "409", description = "Event with same name already exists", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class })))
+    })
+    @PostMapping("")
+    /*public ResponseEntity<Event> saveEvent(@RequestBody Event newEvent) throws InstanceAlreadyExistsException {
+        return ResponseEntity.ok(eventService.saveEvent(newEvent));
+    }*/
+    public Event saveEvent(@RequestBody Event newEvent) throws InstanceAlreadyExistsException {
+        return eventService.saveEvent(newEvent);
     }
 }

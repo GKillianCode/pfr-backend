@@ -2,15 +2,14 @@ package com.pfr.pfr.event;
 
 import com.pfr.pfr.entities.Booking;
 import com.pfr.pfr.entities.Event;
-import com.pfr.pfr.entities.User;
 import com.pfr.pfr.entities.repository.BookingRepository;
 import com.pfr.pfr.entities.repository.EventRepository;
 import com.pfr.pfr.event.dto.EventWithBookings;
-import com.pfr.pfr.user.dto.UserWithBookings;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.management.InstanceAlreadyExistsException;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +35,25 @@ public class EventService {
             return new EventWithBookings(event.get(), listBooking);
         }
         throw new EntityNotFoundException("Event with ID %d not found".formatted(eventId));
+    }
 
+    public Event saveEvent(Event newEvent) throws InstanceAlreadyExistsException {
+        /*Optional<Event> event = findEvent(newEvent);
+        if(event.isPresent()) {
+            throw new InstanceAlreadyExistsException(String.valueOf(eventRepository.findAll().indexOf(newEvent)));
+        }*/
+        List<Event> eventList = getEventByExactName(newEvent.getName());
+        if(eventList.size() > 0) {
+            throw new InstanceAlreadyExistsException("Promo with name %s already exists".formatted(newEvent.getName()));
+        }
+        return eventRepository.save(newEvent);
+    }
+
+    public Optional<Event> findEvent(Event event) {
+        return eventRepository.findAll().stream().filter(event::equals).findFirst();
+    }
+
+    public List<Event> getEventByExactName(String eventName) {
+        return eventRepository.findEventByNameEqualsIgnoreCase(eventName);
     }
 }

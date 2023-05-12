@@ -5,13 +5,13 @@ import com.pfr.pfr.entities.Event;
 import com.pfr.pfr.entities.EventType;
 import com.pfr.pfr.entities.Promo;
 import com.pfr.pfr.event.dto.EventWithBookings;
-import com.pfr.pfr.event_type.EventTypeService;
-import com.pfr.pfr.location.LocationService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -88,5 +88,41 @@ public class EventTests {
                 new Promo("CDA_2_2022", 13, true));
 
         assert eventWithBookings.getEvent().getName().equals(hackathon.getName());
+    }
+
+    @Test
+    @Transactional
+    void testSaveEvent() throws Exception {
+        Event newEvent = new Event("Show",
+                "George",
+                "Sang",
+                "george@sang.fr",
+                "0102030405",
+                "super show event",
+                35,
+                new EventType("Conférence", false),
+                null);
+        Event existingEvent = new Event("Hackathon TechDays",
+                "John",
+                "Doe",
+                "johndoe@email.com",
+                "0123456789",
+                "Developpez votre projet en equipe et relevez des defis techniques lors de notre Hackathon.",
+                50,
+                new EventType("Hackathon", false),
+                new Promo("CDA_2_2022", 13, true));
+
+        RequestBuilder request = MockMvcRequestBuilders.post("/api/event")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newEvent));
+
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+
+        String contentAsString = mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+
+        Event event = objectMapper.readValue(contentAsString, Event.class);
+        assert event.equals(newEvent);
     }
 }
