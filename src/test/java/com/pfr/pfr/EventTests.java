@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pfr.pfr.entities.Event;
 import com.pfr.pfr.entities.EventType;
 import com.pfr.pfr.entities.Promo;
+import com.pfr.pfr.event.dto.EventWithBookings;
 import com.pfr.pfr.event_type.EventTypeService;
 import com.pfr.pfr.location.LocationService;
 import org.junit.jupiter.api.Test;
@@ -50,5 +51,28 @@ public class EventTests {
                 new Promo("CDA_2_2022", 13, true));
 
         assert events.contains(hackathon);
+    }
+
+    @Test
+    void testGetEventWithBookings() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/event/1/bookings");
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        String contentAsString = mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+
+        EventWithBookings eventWithBookings = objectMapper.readValue(contentAsString, EventWithBookings.class);
+
+        Event hackathon = new Event("Hackathon TechDays",
+                "John",
+                "Doe",
+                "johndoe@email.com",
+                "0123456789",
+                "Developpez votre projet en equipe et relevez des defis techniques lors de notre Hackathon.",
+                50,
+                new EventType("Hackathon", false),
+                new Promo("CDA_2_2022", 13, true));
+
+        assert eventWithBookings.getEvent().getName().equals(hackathon.getName());
     }
 }
