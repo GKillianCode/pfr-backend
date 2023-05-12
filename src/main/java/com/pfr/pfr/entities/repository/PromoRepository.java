@@ -25,4 +25,6 @@ public interface PromoRepository  extends JpaRepository<Promo, Integer> {
      */
     @Query(value = "SELECT p.* FROM promo AS p INNER JOIN trainer_promo AS tp ON tp.promo_id = p.id WHERE tp.user_id = :userId", nativeQuery = true)
     List<Promo> findPromosFromUser(@Param("userId") Integer userId);
+
+    List<Promo> findPromoByNameEqualsIgnoreCase(String name);
 }
