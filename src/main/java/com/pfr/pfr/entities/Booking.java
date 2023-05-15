@@ -40,6 +40,7 @@ public class Booking {
     @JoinColumn(name="user_id")
     private User user;
 
+
     public Booking(LocalDate bookingDate, Classroom classroom, Slot slot, Event event, User user) {
         this.bookingDate = bookingDate;
         this.classroom = classroom;

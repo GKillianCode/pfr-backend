@@ -16,6 +16,7 @@ CREATE TABLE `classroom`(
     `capacity` SMALLINT NOT NULL,
     `location_id` SMALLINT UNSIGNED NOT NULL,
     `is_bookable` TINYINT(1) NOT NULL,
+    `is_archived` TINYINT(1) NOT NULL DEFAULT '0'
     PRIMARY KEY (`id`),
     FOREIGN KEY(`location_id`) REFERENCES `location`(`id`)
 );
