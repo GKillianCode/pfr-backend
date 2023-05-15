@@ -54,6 +54,9 @@ public class Event {
     @JoinColumn(name = "promo_id")
     private Promo promo;
 
+    @JoinColumn(name = "is_archived")
+    private Boolean isArchived = false;
+
     public Event(String name, String speakerFirstname, String speakerLastName, String speakerEmail, String speakerPhoneNumber, String description, Integer participantsNumber, EventType eventType, Promo promo) {
         this.name = name;
         this.speakerFirstname = speakerFirstname;

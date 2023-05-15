@@ -8,6 +8,12 @@ import java.util.List;
 public interface EventRepository extends JpaRepository<Event, Integer> {
     List<Event> findByPromoId(int promoId);
 
+    List<Event> findEventByNameEqualsIgnoreCase(String name);
 
+    // Get all active events
+    List<Event> findEventByIsArchivedFalse();
+
+    // Get all archived events
+    List<Event> findEventByIsArchivedTrue();
 
 }

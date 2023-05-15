@@ -84,6 +84,7 @@ CREATE TABLE `event`(
     `event_type_id` SMALLINT UNSIGNED NOT NULL,
     `participants_number` SMALLINT NULL,
     `promo_id` SMALLINT UNSIGNED NULL,
+    `is_archived` BOOLEAN DEFAULT 0 NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY(`promo_id`) REFERENCES `promo`(`id`),
     FOREIGN KEY(`event_type_id`) REFERENCES `event_type`(`id`)
