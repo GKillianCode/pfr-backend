@@ -1,9 +1,12 @@
 package com.pfr.pfr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pfr.pfr.booking.BookingService;
 import com.pfr.pfr.classroom.ClassroomService;
 import com.pfr.pfr.entities.Classroom;
 import com.pfr.pfr.entities.Location;
+import com.pfr.pfr.entities.repository.ClassroomRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import com.pfr.pfr.classroom.dto.ClassroomWithBookings;
 import com.pfr.pfr.entities.*;
@@ -11,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -30,6 +35,13 @@ public class ClassroomTests {
 
     @Autowired
     private ClassroomService classroomService;
+
+    @Autowired
+    @Lazy
+    private BookingService bookingService;
+
+    @Autowired
+    private ClassroomRepository classroomRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -155,4 +167,58 @@ public class ClassroomTests {
         assert classroomWithBookings.equals(cWB);
     }
 
+    @Test
+    @Transactional
+    void testPostClassroomAPI() throws Exception {
+        Location location = new Location("Tours Mame", "49 Bd Preuilly", "37000", "Tours");
+        location.setId(1);
+        Classroom classroom = new Classroom("Salle testPostClassroomAPI", 20, location, true);
+        RequestBuilder request = MockMvcRequestBuilders.post("/api/classroom")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(classroom));
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+        assert classroomService.getClassroomsByCapacity(20).contains(classroom);
+    }
+
+    @Test
+    @Transactional
+    void testUpdateClassroomAPI() throws Exception {
+        Classroom classroomToUpdate = classroomService.getAll().get(0);
+        String classroomName = classroomToUpdate.getName();
+        Integer classroomCapacity = classroomToUpdate.getCapacity();
+        Boolean classroomIsBookable = classroomToUpdate.getIsBookable();
+
+        Classroom classroom = new Classroom(classroomName + " updated", classroomCapacity + 5, classroomToUpdate.getLocation(), !classroomIsBookable);
+
+
+        RequestBuilder request = MockMvcRequestBuilders.patch("/api/classroom/" + classroomToUpdate.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(classroom));
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        String contentAsString = mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+
+        Classroom classroomUpdated = classroomService.getAll().get(0);
+        Classroom classroomExpected = new Classroom(classroom.getName(), classroom.getCapacity(), classroom.getLocation(), classroom.getIsBookable());
+        assert classroomExpected.equals(classroomUpdated);
+    }
+
+
+    @Test
+    @Transactional
+    void testArchivedClassroomAPI() throws Exception {
+        Classroom classroom = classroomRepository.findClassroomById(1);
+        Boolean isArchived = classroom.getIsArchived();
+        RequestBuilder request = MockMvcRequestBuilders.patch("/api/classroom/archive/1");
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+
+        assert classroom.getIsArchived() != isArchived;
+    }
 }

@@ -5,6 +5,7 @@ import com.pfr.pfr.conflict.ConflictService;
 import com.pfr.pfr.entities.Booking;
 import com.pfr.pfr.entities.Conflict;
 import com.pfr.pfr.entities.Promo;
+import com.pfr.pfr.entities.Slot;
 import com.pfr.pfr.entities.repository.BookingRepository;
 import com.pfr.pfr.promo.dto.PromoWithBookings;
 import jakarta.persistence.EntityNotFoundException;
@@ -42,4 +43,6 @@ public class BookingService {
         }
         throw new EntityNotFoundException("Booking with ID %d not found".formatted(bookingId));
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.pfr.pfr.entities.repository;
 
 import com.pfr.pfr.entities.Classroom;
+import com.pfr.pfr.entities.Promo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,5 +14,8 @@ public interface ClassroomRepository extends JpaRepository<Classroom, Integer> {
 
     List<Classroom> findByLocationId(Integer locationId);
     List<Classroom> findByCapacity(Integer capacity);
+
+    List<Classroom> findClassroomByNameEqualsIgnoreCase(String name);
+    Classroom findClassroomById(Integer id);
 
 }

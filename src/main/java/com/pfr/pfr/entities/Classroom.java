@@ -1,10 +1,7 @@
 package com.pfr.pfr.entities;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "classroom")
@@ -33,6 +30,9 @@ public class Classroom {
 
     @Column(name = "is_bookable")
     private Boolean isBookable;
+
+    @Column(name = "is_archived", columnDefinition = "TINYINT(1) default 0")
+    private Boolean isArchived;
 
 
     public Classroom(String name, Integer capacity, Location location, Boolean isBookable) {
