@@ -1,11 +1,21 @@
 package com.pfr.pfr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pfr.pfr.booking.BookingService;
+import com.pfr.pfr.booking.dto.BookingDTO;
+import com.pfr.pfr.classroom.ClassroomService;
 import com.pfr.pfr.entities.*;
+import com.pfr.pfr.event.EventService;
+import com.pfr.pfr.location.LocationService;
+import com.pfr.pfr.promo.PromoService;
+import com.pfr.pfr.slot.SlotService;
+import com.pfr.pfr.user.UserService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -22,6 +32,24 @@ public class BookingTests {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ClassroomService classroomService;
+
+    @Autowired
+    private SlotService slotService;
+
+    @Autowired
+    private EventService eventService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private BookingService bookingService;
+
+    @Autowired
+    private LocationService locationService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -60,5 +88,44 @@ public class BookingTests {
                 johnDoe
         );
         assert bookings.contains(booking);
+    }
+
+    @Test
+    @Transactional
+    void testSaveBookingByAPI() throws Exception {
+        LocalDate date = LocalDate.of(2025, 4, 10);
+        Location location = locationService.getAll().get(0);
+        Classroom classroomSmall = new Classroom("TestSmall", 2, location, true);
+        Classroom classroomBig = new Classroom("TestBig", 200, location, true);
+        Integer classroomSmallId = classroomService.
+        Integer classroomId = classroomService.getAll().get(0).getId();
+        Integer slotId = slotService.getByDate(date).get(0).getId();
+        Integer eventId = eventService.getAll().get(0).getId();
+        Integer userId = userService.getAll().get(0).getId();
+
+        BookingDTO newBookingDTO = new BookingDTO(date, classroomId, slotId, eventId, userId);
+
+        RequestBuilder request = MockMvcRequestBuilders.post("/api/booking")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newBookingDTO));
+
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+
+        String contentAsString = mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+
+        BookingDTO bookingDTO = objectMapper.readValue(contentAsString, BookingDTO.class);
+        assert bookingDTO.equals(newBookingDTO);
+    }
+
+    @Test
+    @Transactional
+    void testUpdateBookingByAPI() throws Exception {
+        Booking bookingToUpdate = bookingService.getAll().get(0);
+        LocalDate date = LocalDate.of(2025, 4, 10);
+        Integer classroomId = classroomService.getAll().get(0).getId();
+        Integer slotId = slotService.getByDate(date).get(0).getId();
+
     }
 }

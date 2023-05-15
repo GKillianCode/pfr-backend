@@ -10,6 +10,7 @@ import com.pfr.pfr.promo.dto.PromoWithBookings;
 import com.pfr.pfr.promo.dto.PromoDTO;
 import com.pfr.pfr.promo.dto.PromoWithEvents;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,7 +72,7 @@ public class PromoService {
     public Promo savePromo(Promo promo) throws InstanceAlreadyExistsException {
         List<Promo> promoList = getPromoByExactName(promo.getName());
         if (promoList.size() > 0) {
-            throw new InstanceAlreadyExistsException("Promo with name %s already exists".formatted(promo.getName()));
+            throw new EntityExistsException("Promo with name %s already exists".formatted(promo.getName()));
         }
         return promoRepository.save(promo);
     }
@@ -80,14 +81,14 @@ public class PromoService {
         return promoRepository.findPromoByNameEqualsIgnoreCase(promoName);
     }
 
-    public Promo updatePromo(int promoId, PromoDTO promoDTO) throws InstanceAlreadyExistsException {
+    public Promo updatePromo(int promoId, PromoDTO promoDTO) {
         Optional<Promo> promo = promoRepository.findById(promoId);
         if (promo.isPresent()){
             if (promoDTO.getName() != null) {
                 // Vérification que le nouveau nom n'est pas déjà existant en base
                 List<Promo> promoList = getPromoByExactName(promoDTO.getName());
                 if (promoList.size() > 0) {
-                    throw new InstanceAlreadyExistsException("Promo with name %s already exists".formatted(promoDTO.getName()));
+                    throw new EntityExistsException("Promo with name %s already exists".formatted(promoDTO.getName()));
                 }
                 promo.get().setName(promoDTO.getName());
             }

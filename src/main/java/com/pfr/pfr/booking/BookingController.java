@@ -1,19 +1,21 @@
 package com.pfr.pfr.booking;
 
+import com.pfr.pfr.booking.dto.BookingDTO;
 import com.pfr.pfr.entities.Booking;
+import com.pfr.pfr.entities.Promo;
 import com.pfr.pfr.exceptions.ExceptionMessage;
+import com.pfr.pfr.promo.dto.PromoDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.management.InstanceAlreadyExistsException;
 import java.util.List;
 
 @RestController
@@ -42,5 +44,32 @@ public class BookingController {
     @GetMapping("/all")
     public List<Booking> getAllBookings() {
         return bookingService.getAll();
+    }
+
+    @Operation(summary = "Save booking")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Booking.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "404", description = "Bookings not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class })))
+    })
+    @PostMapping("")
+    public ResponseEntity<Booking> saveBooking(@RequestBody BookingDTO newBookingDTO) {
+        return ResponseEntity.ok(bookingService.saveBooking(newBookingDTO));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Booking> updateBooking(
+            @PathVariable("id") Integer bookingId ,
+            @RequestBody BookingDTO newBookingDTO
+    ) {
+        return ResponseEntity.ok(bookingService.updateBooking(bookingId, newBookingDTO));
     }
 }
