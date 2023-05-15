@@ -27,6 +27,7 @@ CREATE TABLE `slot`(
     `week_day` VARCHAR(255) NOT NULL,
     `daytime` VARCHAR(255) NOT NULL,
     `is_bookable` TINYINT(1) NOT NULL,
+    `is_archived`  BOOLEAN NOT NULL DEFAULT 0
     PRIMARY KEY (`id`)
 );
 
