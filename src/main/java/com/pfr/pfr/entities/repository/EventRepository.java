@@ -10,4 +10,10 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
 
     List<Event> findEventByNameEqualsIgnoreCase(String name);
 
+    // Get all active events
+    List<Event> findEventByIsArchivedFalse();
+
+    // Get all archived events
+    List<Event> findEventByIsArchivedTrue();
+
 }

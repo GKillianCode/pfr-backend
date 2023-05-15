@@ -11,6 +11,7 @@ import com.pfr.pfr.promo.dto.PromoDTO;
 import com.pfr.pfr.promo.dto.PromoWithEvents;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.management.InstanceAlreadyExistsException;
@@ -23,6 +24,7 @@ public class PromoService {
     @Autowired
     private PromoRepository promoRepository;
 
+    @Lazy
     @Autowired
     private EventService eventService;
 

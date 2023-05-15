@@ -4,7 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pfr.pfr.entities.Event;
 import com.pfr.pfr.entities.EventType;
 import com.pfr.pfr.entities.Promo;
+import com.pfr.pfr.event.EventService;
+import com.pfr.pfr.event.dto.EventDTO;
 import com.pfr.pfr.event.dto.EventWithBookings;
+import com.pfr.pfr.event_type.EventTypeService;
+import com.pfr.pfr.promo.PromoService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +30,15 @@ import java.util.List;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class EventTests {
+
+    @Autowired
+    private EventService eventService;
+
+    @Autowired
+    private EventTypeService eventTypeService;
+
+    @Autowired
+    private PromoService promoService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -93,14 +106,15 @@ public class EventTests {
     @Test
     @Transactional
     void testSaveEvent() throws Exception {
-        Event newEvent = new Event("Show",
+        EventType conference;
+        Event newEvent = new Event("Show Event",
                 "George",
                 "Sang",
                 "george@sang.fr",
                 "0102030405",
                 "super show event",
                 35,
-                new EventType("Conférence", false),
+                eventTypeService.getEventTypeById(5),
                 null);
         Event existingEvent = new Event("Hackathon TechDays",
                 "John",
@@ -124,5 +138,58 @@ public class EventTests {
 
         Event event = objectMapper.readValue(contentAsString, Event.class);
         assert event.equals(newEvent);
+    }
+
+    @Test
+    @Transactional
+    void testUpdateEvent() throws Exception {
+        Event eventToUpdate = eventService.getAll().get(0);
+        String eventName = eventToUpdate.getName();
+        String eventSpeakerFN = eventToUpdate.getSpeakerFirstname();
+        String eventSpeakerLN = eventToUpdate.getSpeakerLastName();
+        String eventSpeakerEM = eventToUpdate.getSpeakerEmail();
+        String eventSpeakerPN = eventToUpdate.getSpeakerPhoneNumber();
+        String eventDescription = eventToUpdate.getDescription();
+        Integer eventNbP = eventToUpdate.getParticipantsNumber();
+        Integer eventET = eventToUpdate.getEventType().getId();
+        Integer eventPromo = eventToUpdate.getPromo().getId();
+
+        EventDTO eventDTO = new EventDTO(eventName + "Z", eventSpeakerFN + "z", eventSpeakerLN + "z", eventSpeakerEM + "z", eventSpeakerPN + "9", eventDescription + " zombie", eventNbP + 1, eventET, eventPromo);
+
+        RequestBuilder request = MockMvcRequestBuilders.patch("/api/event/" + eventToUpdate.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(eventDTO));
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        String contentAsString = mockMvc.perform(request)
+            .andExpect(resultStatus)
+            .andReturn().getResponse().getContentAsString();
+
+        Event eventUpdated = eventService.getAll().get(0);
+        Event eventExpected = new Event(
+                eventDTO.getName(),
+                eventDTO.getSpeakerFirstname(),
+                eventDTO.getSpeakerLastName(),
+                eventDTO.getSpeakerEmail(),
+                eventDTO.getSpeakerPhoneNumber(),
+                eventDTO.getDescription(),
+                eventDTO.getParticipantsNumber(),
+                eventTypeService.getEventTypeById(eventDTO.getEventTypeId()),
+                promoService.getPromoById(eventDTO.getPromoId())
+        );
+        assert eventExpected.equals(eventUpdated);
+    }
+
+    @Test
+    @Transactional
+    void testArchivedEvent() throws Exception {
+        Event eventToArchived = eventService.getAll().get(0);
+        RequestBuilder request = MockMvcRequestBuilders.patch("/api/event/" + eventToArchived.getId() + "/archived")
+            .contentType(MediaType.APPLICATION_JSON);
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        String contentAsString = mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+        Event eventArchived = objectMapper.readValue(contentAsString, Event.class);
+        assert eventArchived.getIsArchived().equals(true);
     }
 }
