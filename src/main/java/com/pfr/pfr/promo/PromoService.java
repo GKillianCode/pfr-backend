@@ -25,6 +25,7 @@ public class PromoService {
     @Autowired
     private PromoRepository promoRepository;
 
+    @Lazy
     @Autowired
     private EventService eventService;
 

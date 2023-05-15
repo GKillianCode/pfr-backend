@@ -29,6 +29,7 @@ CREATE TABLE `slot`(
     `week_day` VARCHAR(255) NOT NULL,
     `daytime` VARCHAR(255) NOT NULL,
     `is_bookable` TINYINT(1) NOT NULL,
+    `is_archived`  BOOLEAN NOT NULL DEFAULT 0
     PRIMARY KEY (`id`)
 );
 
@@ -85,6 +86,7 @@ CREATE TABLE `event`(
     `event_type_id` SMALLINT UNSIGNED NOT NULL,
     `participants_number` SMALLINT NULL,
     `promo_id` SMALLINT UNSIGNED NULL,
+    `is_archived` BOOLEAN DEFAULT 0 NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY(`promo_id`) REFERENCES `promo`(`id`),
     FOREIGN KEY(`event_type_id`) REFERENCES `event_type`(`id`)
