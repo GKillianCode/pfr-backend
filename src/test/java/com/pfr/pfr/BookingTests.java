@@ -7,6 +7,7 @@ import com.pfr.pfr.booking.BookingService;
 import com.pfr.pfr.booking.dto.BookingDTO;
 import com.pfr.pfr.classroom.ClassroomService;
 import com.pfr.pfr.entities.*;
+import com.pfr.pfr.event_type.EventTypeService;
 import org.junit.jupiter.api.BeforeEach;
 import com.pfr.pfr.event.EventService;
 import com.pfr.pfr.location.LocationService;
@@ -55,6 +56,12 @@ public class BookingTests {
 
     @Autowired
     private LocationService locationService;
+
+    @Autowired
+    private EventTypeService eventTypeService;
+
+    @Autowired
+    private PromoService promoService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -125,41 +132,90 @@ public class BookingTests {
     }
 
     @Test
-    @Transactional
     void testSaveBookingByAPI() throws Exception {
         LocalDate date = LocalDate.of(2025, 4, 10);
-        Location location = locationService.getAll().get(0);
-        Classroom classroomSmall = new Classroom("TestSmall", 2, location, true);
-        Classroom classroomBig = new Classroom("TestBig", 200, location, true);
-        Integer classroomSmallId = classroomService.
-        Integer classroomId = classroomService.getAll().get(0).getId();
         Integer slotId = slotService.getByDate(date).get(0).getId();
-        Integer eventId = eventService.getAll().get(0).getId();
+
+        Location location = locationService.getAll().get(0);
+
+        Classroom classroomSmall = new Classroom("TestSmall", 2, location, true);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/classroom").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(classroomSmall)));
+
+        Classroom classroomBig = new Classroom("TestBig", 200, location, true);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/classroom").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(classroomBig)));
+
+        Integer classroomSmallId = classroomService.getClassroomByExactName("TestSmall").get(0).getId();
+        Integer classroomBigId = classroomService.getClassroomByExactName("TestBig").get(0).getId();
+
+        Promo promo = new Promo("CDA_1_2025", 30, true);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/promo").contentType("application/json").content(objectMapper.writeValueAsString(promo)));
+
+        EventType eventType = eventTypeService.getAll().get(0);
+        Event event1 = new Event(
+                "Event test 1",
+                null,
+                null,
+                null,
+                null,
+                "description",
+                2,
+                eventType,
+                null
+        );
+        mockMvc.perform(MockMvcRequestBuilders.post("api/event").contentType("application/json").content(objectMapper.writeValueAsString(event1)));
+
+        Event event2 = new Event(
+                "Event test 1",
+                null,
+                null,
+                null,
+                null,
+                "description",
+                2,
+                eventType,
+                promo
+        );
+        mockMvc.perform(MockMvcRequestBuilders.post("api/event").contentType("application/json").content(objectMapper.writeValueAsString(event2)));
+
+        Integer eventId1 = eventService.getAll().stream().filter(event -> event.equals(event1)).findFirst().orElseGet(null).getId();
+        Integer eventId2 = eventService.getAll().stream().filter(event -> event.equals(event2)).findFirst().orElseGet(null).getId();
+
         Integer userId = userService.getAll().get(0).getId();
 
-        BookingDTO newBookingDTO = new BookingDTO(date, classroomId, slotId, eventId, userId);
+        BookingDTO newBookingDTO1 = new BookingDTO(date, classroomSmallId, slotId, eventId1, userId);
+        BookingDTO newBookingDTO2 = new BookingDTO(date, classroomBigId, slotId, eventId2, userId);
 
-        RequestBuilder request = MockMvcRequestBuilders.post("/api/booking")
+        RequestBuilder request1 = MockMvcRequestBuilders.post("/api/booking")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(newBookingDTO));
-
-        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
-
-        String contentAsString = mockMvc.perform(request)
-                .andExpect(resultStatus)
+                .content(objectMapper.writeValueAsString(newBookingDTO1));
+        ResultMatcher resultStatus1 = MockMvcResultMatchers.status().isOk();
+        String contentAsString1 = mockMvc.perform(request1)
+                .andExpect(resultStatus1)
                 .andReturn().getResponse().getContentAsString();
 
-        BookingDTO bookingDTO = objectMapper.readValue(contentAsString, BookingDTO.class);
-        assert bookingDTO.equals(newBookingDTO);
+        RequestBuilder request2 = MockMvcRequestBuilders.post("/api/booking")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newBookingDTO2));
+        ResultMatcher resultStatus2 = MockMvcResultMatchers.status().isOk();
+        String contentAsString2 = mockMvc.perform(request2)
+                .andExpect(resultStatus2)
+                .andReturn().getResponse().getContentAsString();
+
+
+        BookingDTO bookingDTO1 = objectMapper.readValue(contentAsString1, BookingDTO.class);
+        BookingDTO bookingDTO2 = objectMapper.readValue(contentAsString2, BookingDTO.class);
+
+        assert bookingDTO1.equals(newBookingDTO1);
+        assert bookingDTO2.equals(newBookingDTO2);
     }
 
-    @Test
-    @Transactional
-    void testUpdateBookingByAPI() throws Exception {
-        Booking bookingToUpdate = bookingService.getAll().get(0);
-        LocalDate date = LocalDate.of(2025, 4, 10);
-        Integer classroomId = classroomService.getAll().get(0).getId();
-        Integer slotId = slotService.getByDate(date).get(0).getId();
-
-    }
+//    @Test
+//    @Transactional
+//    void testUpdateBookingByAPI() throws Exception {
+//        Booking bookingToUpdate = bookingService.getAll().get(0);
+//        LocalDate date = LocalDate.of(2025, 4, 10);
+//        Integer classroomId = classroomService.getAll().get(0).getId();
+//        Integer slotId = slotService.getByDate(date).get(0).getId();
+//
+//    }
 }

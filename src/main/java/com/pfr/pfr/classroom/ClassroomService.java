@@ -13,6 +13,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class ClassroomService {
     @Autowired
     private ClassroomRepository classroomRepository;
 
-    //@Lazy
+    @Lazy
     @Autowired
     private BookingService bookingService;
 
