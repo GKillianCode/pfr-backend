@@ -121,7 +121,28 @@ public class UserController {
                     ExceptionMessage.class })))
     })
     @GetMapping("/{id}/bookings")
-    public UserWithBookings getUserWithBookings(@PathVariable("id") Integer userId) {
-        return userService.getUserWithBookings(userId);
+    public UserWithBookings getUserWithBookings(@PathVariable("id") Integer userId, @RequestParam Integer pageNumber, @RequestParam Integer itemsPerPage) {
+        return userService.getUserWithBookings(userId, pageNumber, itemsPerPage);
+    }
+
+    @Operation(summary = "Get a user and its bookings by week")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserWithBookings.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "409", description = "User with same name already exists", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class })))
+    })
+    @GetMapping("/{id}/bookings/weekly/")
+    public UserWithBookings getUserWithBookingsByWeek(@PathVariable("id") Integer userId, @RequestParam Integer weekNumber, @RequestParam Integer year) {
+        return userService.getUserWithBookingsByWeek(userId, weekNumber, year);
     }
 }

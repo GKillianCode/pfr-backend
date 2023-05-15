@@ -7,6 +7,7 @@ CREATE TABLE `location`(
     `address` VARCHAR(255) NOT NULL,
     `zip_code` VARCHAR(255) NOT NULL,
     `city` VARCHAR(255) NOT NULL,
+    `is_archived`  BOOLEAN NOT NULL DEFAULT 0
     PRIMARY KEY (`id`)
 );
 
@@ -16,6 +17,7 @@ CREATE TABLE `classroom`(
     `capacity` SMALLINT NOT NULL,
     `location_id` SMALLINT UNSIGNED NOT NULL,
     `is_bookable` TINYINT(1) NOT NULL,
+    `is_archived` TINYINT(1) NOT NULL DEFAULT '0'
     PRIMARY KEY (`id`),
     FOREIGN KEY(`location_id`) REFERENCES `location`(`id`)
 );

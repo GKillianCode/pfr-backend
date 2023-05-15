@@ -1,19 +1,31 @@
 package com.pfr.pfr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pfr.pfr.booking.BookingService;
 import com.pfr.pfr.classroom.ClassroomService;
 import com.pfr.pfr.entities.Classroom;
 import com.pfr.pfr.entities.Location;
+import com.pfr.pfr.entities.repository.ClassroomRepository;
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
+import com.pfr.pfr.classroom.dto.ClassroomWithBookings;
+import com.pfr.pfr.entities.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,11 +37,29 @@ public class ClassroomTests {
     private ClassroomService classroomService;
 
     @Autowired
+    @Lazy
+    private BookingService bookingService;
+
+    @Autowired
+    private ClassroomRepository classroomRepository;
+
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
-
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+    @BeforeEach
+    public void setUp() {
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(webApplicationContext)
+                .addFilter((request, response, chain) -> {
+                    response.setCharacterEncoding("UTF-8"); // this is crucial
+                    chain.doFilter(request, response);
+                }, "/*")
+                .build();
+    }
     @Test
     void testGetAllClassroomsByAPI() throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.get("/api/classroom/all");
@@ -100,4 +130,95 @@ public class ClassroomTests {
         assert classrooms.contains(classroom);
     }
 
+    @Test
+    void testGetClassroomWithBookings() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/classroom/1/bookings");
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        String contentAsString = mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+
+        ClassroomWithBookings classroomWithBookings = objectMapper.readValue(contentAsString, ClassroomWithBookings.class);
+
+        Classroom salle1 = new Classroom("Salle 1", 15, new Location("Tours Mame", "49 Bd Preuilly", "37000", "Tours"), false);
+        Slot lundiMatin = new Slot("lundi", "matin", true);
+        Event hackathon = new Event("Hackathon TechDays",
+                "John",
+                "Doe",
+                "johndoe@email.com",
+                "0123456789",
+                "Developpez votre projet en equipe et relevez des defis techniques lors de notre Hackathon.",
+                50,
+                new EventType("Hackathon", false),
+                new Promo("CDA_2_2022", 13, true));
+        User johnDoe = new User("John", "Doe", "johndoe@gmail.com", "root", true, new Role("ROLE_FORMATEUR"));
+        Booking booking = new Booking(
+                LocalDate.of(2023, 5, 10),
+                salle1,
+                lundiMatin,
+                hackathon,
+                johnDoe
+        );
+
+        ArrayList<Booking> salle1Bookings = new ArrayList<>();
+        salle1Bookings.add(booking);
+        ClassroomWithBookings cWB = new ClassroomWithBookings(salle1, salle1Bookings);
+
+        assert classroomWithBookings.equals(cWB);
+    }
+
+    @Test
+    @Transactional
+    void testPostClassroomAPI() throws Exception {
+        Location location = new Location("Tours Mame", "49 Bd Preuilly", "37000", "Tours");
+        location.setId(1);
+        Classroom classroom = new Classroom("Salle testPostClassroomAPI", 20, location, true);
+        RequestBuilder request = MockMvcRequestBuilders.post("/api/classroom")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(classroom));
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+        assert classroomService.getClassroomsByCapacity(20).contains(classroom);
+    }
+
+    @Test
+    @Transactional
+    void testUpdateClassroomAPI() throws Exception {
+        Classroom classroomToUpdate = classroomService.getAll().get(0);
+        String classroomName = classroomToUpdate.getName();
+        Integer classroomCapacity = classroomToUpdate.getCapacity();
+        Boolean classroomIsBookable = classroomToUpdate.getIsBookable();
+
+        Classroom classroom = new Classroom(classroomName + " updated", classroomCapacity + 5, classroomToUpdate.getLocation(), !classroomIsBookable);
+
+
+        RequestBuilder request = MockMvcRequestBuilders.patch("/api/classroom/" + classroomToUpdate.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(classroom));
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        String contentAsString = mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+
+        Classroom classroomUpdated = classroomService.getAll().get(0);
+        Classroom classroomExpected = new Classroom(classroom.getName(), classroom.getCapacity(), classroom.getLocation(), classroom.getIsBookable());
+        assert classroomExpected.equals(classroomUpdated);
+    }
+
+
+    @Test
+    @Transactional
+    void testArchivedClassroomAPI() throws Exception {
+        Classroom classroom = classroomRepository.findClassroomById(1);
+        Boolean isArchived = classroom.getIsArchived();
+        RequestBuilder request = MockMvcRequestBuilders.patch("/api/classroom/archive/1");
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+
+        assert classroom.getIsArchived() != isArchived;
+    }
 }

@@ -1,5 +1,7 @@
 package com.pfr.pfr.booking;
 
+import com.pfr.pfr.booking.dto.BookingWithConflicts;
+import com.pfr.pfr.conflict.ConflictService;
 import com.pfr.pfr.booking.dto.BookingDTO;
 import com.pfr.pfr.entities.Booking;
 import com.pfr.pfr.entities.Promo;
@@ -27,6 +29,7 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
+
     @Operation(summary = "Get all bookings")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
@@ -44,6 +47,26 @@ public class BookingController {
     @GetMapping("/all")
     public List<Booking> getAllBookings() {
         return bookingService.getAll();
+    }
+
+    @Operation(summary = "Get booking with conflicts")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Booking.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "404", description = "Bookings not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class })))
+    })
+    @GetMapping("/{id}/conflicts")
+    public BookingWithConflicts getBookingWithConflicts(@PathVariable("id") Integer bookingId)
+    {
+        return bookingService.getBookingWithConflicts(bookingId);
     }
 
     @Operation(summary = "Save booking")
