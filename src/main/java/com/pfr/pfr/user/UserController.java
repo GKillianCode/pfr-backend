@@ -83,27 +83,6 @@ public class UserController {
         return userService.getUserWithPromos(userId);
     }
 
-    @Operation(summary = "Connect a user to the application")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = User.class)) }),
-            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
-                    ExceptionMessage.class }))),
-            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
-                    ExceptionMessage.class }))),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
-                    ExceptionMessage.class }))),
-            @ApiResponse(responseCode = "409", description = "User with same name already exists", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
-                    ExceptionMessage.class }))),
-            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
-                    ExceptionMessage.class })))
-    })
-    @PostMapping("/connect")
-    public String connect(@RequestBody User user) {
-        return userService.connect(user.getEmail(), user.getPassword());
-    }
-
     @Operation(summary = "Get a user and its bookings")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
@@ -141,6 +120,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class })))
     })
+
     @GetMapping("/{id}/bookings/weekly/")
     public UserWithBookings getUserWithBookingsByWeek(@PathVariable("id") Integer userId, @RequestParam Integer weekNumber, @RequestParam Integer year) {
         return userService.getUserWithBookingsByWeek(userId, weekNumber, year);
