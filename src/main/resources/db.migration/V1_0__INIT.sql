@@ -7,6 +7,7 @@ CREATE TABLE `location`(
     `address` VARCHAR(255) NOT NULL,
     `zip_code` VARCHAR(255) NOT NULL,
     `city` VARCHAR(255) NOT NULL,
+    `is_archived`  BOOLEAN NOT NULL DEFAULT 0
     PRIMARY KEY (`id`)
 );
 

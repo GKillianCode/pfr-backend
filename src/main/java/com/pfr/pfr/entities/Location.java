@@ -1,17 +1,19 @@
 package com.pfr.pfr.entities;
 
 import jakarta.persistence.*;
+import jdk.jfr.BooleanFlag;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Entity
 @Table(name = "location")
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"name", "address", "zipCode", "city"})
+@EqualsAndHashCode(of = {"name", "address", "zipCode", "city", "isArchived"})
 public class Location {
 
     @Id
@@ -31,10 +33,15 @@ public class Location {
     @Column(name = "city")
     private String city;
 
+    @Column(name = "is_archived")
+    @BooleanFlag
+    private Boolean isArchived;
+
     public Location(String name, String address, String zipCode, String city) {
         this.name = name;
         this.address = address;
         this.zipCode = zipCode;
         this.city = city;
+        this.isArchived = false;
     }
 }
