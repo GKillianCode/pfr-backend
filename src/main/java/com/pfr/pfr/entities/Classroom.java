@@ -23,7 +23,6 @@ public class Classroom {
     @Column(name = "capacity")
     private Integer capacity;
 
-    //@ManyToOne(cascade = CascadeType.MERGE)
     @ManyToOne
     @JoinColumn(name = "location_id", updatable = true, insertable = true)
     private Location location;

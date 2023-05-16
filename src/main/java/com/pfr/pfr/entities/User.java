@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"firstname", "lastname", "email", "password", "is_active", "role"})
+@EqualsAndHashCode(of = {"firstname", "lastname", "email", "is_active", "role"})
 public class User implements UserDetails {
 
     @Id
