@@ -122,6 +122,26 @@ public class ClassroomController {
         return classroomService.getClassroomWithBookings(classroomId);
     }
 
+    @Operation(summary = "Get all classrooms and all of its bookings and slots")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Classroom.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "404", description = "Elements not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class })))
+    })
+    @GetMapping("/all/bookings")
+    public List<ClassroomWithBookings> getAllClassroomsWithBookings(@RequestParam Integer weekNumber, Integer year) {
+        return classroomService.getAllClassroomsWithBookingByDateAndBySlot(weekNumber, year);
+    }
+
+
     @Operation(summary = "allow to filter classroom")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
