@@ -55,7 +55,7 @@ public class Event {
     private Promo promo;
 
     @JoinColumn(name = "is_archived")
-    private Boolean isArchived = false;
+    private Boolean isArchived;
 
     public Event(String name, String speakerFirstname, String speakerLastName, String speakerEmail, String speakerPhoneNumber, String description, Integer participantsNumber, EventType eventType, Promo promo) {
         this.name = name;
@@ -67,5 +67,6 @@ public class Event {
         this.participantsNumber = participantsNumber;
         this.eventType = eventType;
         this.promo = promo;
+        this.isArchived = false;
     }
 }
