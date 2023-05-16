@@ -1,5 +1,5 @@
-DROP DATABASE IF EXISTS `db_pfr`;
 
+DROP DATABASE IF EXISTS db_pfr;
 CREATE DATABASE IF NOT EXISTS `db_pfr`;
 USE `db_pfr`;
 
