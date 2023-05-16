@@ -1,3 +1,5 @@
+
+DROP DATABASE IF EXISTS db_pfr;
 CREATE DATABASE IF NOT EXISTS `db_pfr`;
 USE `db_pfr`;
 
@@ -7,7 +9,7 @@ CREATE TABLE `location`(
     `address` VARCHAR(255) NOT NULL,
     `zip_code` VARCHAR(255) NOT NULL,
     `city` VARCHAR(255) NOT NULL,
-    `is_archived`  BOOLEAN NOT NULL DEFAULT 0
+    `is_archived`  BOOLEAN NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
 );
 
@@ -17,7 +19,7 @@ CREATE TABLE `classroom`(
     `capacity` SMALLINT NOT NULL,
     `location_id` SMALLINT UNSIGNED NOT NULL,
     `is_bookable` TINYINT(1) NOT NULL,
-    `is_archived` TINYINT(1) NOT NULL DEFAULT '0'
+    `is_archived` TINYINT(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
     FOREIGN KEY(`location_id`) REFERENCES `location`(`id`)
 );
@@ -27,7 +29,7 @@ CREATE TABLE `slot`(
     `week_day` VARCHAR(255) NOT NULL,
     `daytime` VARCHAR(255) NOT NULL,
     `is_bookable` TINYINT(1) NOT NULL,
-    `is_archived`  BOOLEAN NOT NULL DEFAULT 0
+    `is_archived`  BOOLEAN NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
 );
 
