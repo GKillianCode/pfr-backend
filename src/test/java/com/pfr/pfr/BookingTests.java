@@ -218,23 +218,23 @@ public class BookingTests {
                 .andReturn().getResponse().getContentAsString();
 
         // Création booking dans classroom de 2 et event pour effectif promo -> ça ne doit pas passer
-//        BookingDTO newBookingDTO3 = new BookingDTO(date2, classroomSmallId, slotId2, event2RecupId, userId);
-//
-//        RequestBuilder request3 = MockMvcRequestBuilders.post("/api/booking")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(newBookingDTO3));
-//        ResultMatcher resultStatus3 = MockMvcResultMatchers.status().isConflict();
-//        String contentAsString3 = mockMvc.perform(request3)
-//                .andExpect(resultStatus3)
-//                .andReturn().getResponse().getContentAsString();
+        BookingDTO newBookingDTO3 = new BookingDTO(date2, classroomSmallId, slotId2, event2RecupId, userId);
+
+        RequestBuilder request3 = MockMvcRequestBuilders.post("/api/booking")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newBookingDTO3));
+        ResultMatcher resultStatus3 = MockMvcResultMatchers.status().isConflict();
+        String contentAsString3 = mockMvc.perform(request3)
+                .andExpect(resultStatus3)
+                .andReturn().getResponse().getContentAsString();
 
         BookingDTO bookingDTO1 = objectMapper.readValue(contentAsString1, BookingDTO.class);
         BookingDTO bookingDTO2 = objectMapper.readValue(contentAsString2, BookingDTO.class);
-//        BookingDTO bookingDTO3 = objectMapper.readValue(contentAsString3, BookingDTO.class);
+        BookingDTO bookingDTO3 = objectMapper.readValue(contentAsString3, BookingDTO.class);
 
         assert bookingDTO1.equals(newBookingDTO1);
         assert bookingDTO2.equals(newBookingDTO2);
-//        assert !bookingService.getAll().contains(bookingDTO3);
+        assert !bookingService.getAll().contains(bookingDTO3);
     }
 
 //    @Test

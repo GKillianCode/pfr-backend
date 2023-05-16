@@ -4,6 +4,7 @@ import com.pfr.pfr.booking.dto.BookingWithConflicts;
 import com.pfr.pfr.conflict.ConflictService;
 import com.pfr.pfr.booking.dto.BookingDTO;
 import com.pfr.pfr.entities.Booking;
+import com.pfr.pfr.entities.Location;
 import com.pfr.pfr.entities.Promo;
 import com.pfr.pfr.exceptions.ExceptionMessage;
 import com.pfr.pfr.promo.dto.PromoDTO;
@@ -71,20 +72,20 @@ public class BookingController {
         return bookingService.getBookingWithConflicts(bookingId);
     }
 
-    @Operation(summary = "Save booking")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Booking.class)) }),
-            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
-                    ExceptionMessage.class }))),
-            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
-                    ExceptionMessage.class }))),
-            @ApiResponse(responseCode = "404", description = "Bookings not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
-                    ExceptionMessage.class }))),
-            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
-                    ExceptionMessage.class })))
-    })
+//    @Operation(summary = "Save booking")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "OK",
+//                    content = { @Content(mediaType = "application/json",
+//                            schema = @Schema(implementation = Booking.class)) }),
+//            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+//                    ExceptionMessage.class }))),
+//            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+//                    ExceptionMessage.class }))),
+//            @ApiResponse(responseCode = "404", description = "Bookings not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+//                    ExceptionMessage.class }))),
+//            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+//                    ExceptionMessage.class })))
+//    })
     @PostMapping("")
     public ResponseEntity<Booking> saveBooking(@RequestBody BookingDTO newBookingDTO) {
         return ResponseEntity.ok(bookingService.saveBooking(newBookingDTO));

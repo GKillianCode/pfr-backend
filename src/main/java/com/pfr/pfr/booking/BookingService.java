@@ -73,24 +73,6 @@ public class BookingService {
 
     public Booking saveBooking(BookingDTO bookingDTO) {
 
-        int capacityClassroom = 0; // valeur arbitraire correspondant à "illimité"
-        int capacityNeeded = 0;
-
-        // Récupération de la capacité nécessaire (ordre priorité : 1-event.participantsNumbrer, 2-promo.studentsNumber)
-        Event event = eventService.getById(bookingDTO.getEventId());
-        if (event.getParticipantsNumber() != null) {
-            capacityNeeded = event.getParticipantsNumber();
-        } else {
-            if (event.getPromo() != null) {
-                capacityNeeded = event.getPromo().getStudentsNumber();
-            }
-        }
-
-        // Si classroom renseignée et pas de nombre de participants spécifié
-        if (bookingDTO.getClassroomId() != null && event.getParticipantsNumber() == null) {
-            capacityClassroom = classroomService.getById(bookingDTO.getClassroomId()).getCapacity();
-        }
-
         // Vérifications (capacité, slot, dispo) avant ajout
         if (checkCapacityNeeded(bookingDTO)) {
             if (checkBookingSlot(bookingDTO)) {
@@ -156,7 +138,6 @@ public class BookingService {
 
     // Vérification d'un éventuel booking similaire
     public Boolean checkNoSimilarBooking(BookingDTO bookingDTO) {
-        //bookingDTO.toEntity()
         List<Booking> similarBooking = bookingRepository.findByDateAndSlotAndClassroom(bookingDTO.getBookingDate(), bookingDTO.getSlotId(), bookingDTO.getClassroomId());
         // Si le créneau est déjà réservé (même date, même slot, et même classroom)
         if (similarBooking.size() > 0) {

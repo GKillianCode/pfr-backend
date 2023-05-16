@@ -38,4 +38,16 @@ public class ExceptionHandlerControllerAdvice {
         ExceptionMessage exceptionMessage = new ExceptionMessage(request.getRequestURI(), exception.getMessage(), exception.getClass().getName());
         return new ResponseEntity<>(exceptionMessage, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExceptionMessage> illegalArgumentException(HttpServletRequest request,IllegalArgumentException exception) {
+        ExceptionMessage exceptionMessage = new ExceptionMessage(request.getRequestURI(), exception.getMessage(), exception.getClass().getName());
+        return new ResponseEntity<>(exceptionMessage, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EntityExistsException.class)
+    public ResponseEntity<ExceptionMessage> entityExistsException(HttpServletRequest request,EntityExistsException exception) {
+        ExceptionMessage exceptionMessage = new ExceptionMessage(request.getRequestURI(), exception.getMessage(), exception.getClass().getName());
+        return new ResponseEntity<>(exceptionMessage, HttpStatus.CONFLICT);
+    }
 }

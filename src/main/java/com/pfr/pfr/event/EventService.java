@@ -42,7 +42,7 @@ public class EventService {
         if (event.isPresent()) {
             return event.get();
         }
-        throw new EntityNotFoundException("Promo with ID %d not found".formatted(eventId));
+        throw new EntityNotFoundException("Event with ID %d not found".formatted(eventId));
     }
 
     public List<Event> getEventsForPromo(int promoId) {
