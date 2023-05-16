@@ -72,6 +72,7 @@ CREATE TABLE `event_type`(
     `id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
     `is_exceptional_closure` TINYINT(1) NOT NULL DEFAULT '0',
+    `is_archived`  BOOLEAN NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
 );
 
