@@ -148,4 +148,23 @@ public class EventController {
     })
     @GetMapping("/all/archived")
     List<Event> getAllArchivedEvents() { return eventService.getAllArchived(); }
+
+    @Operation(summary = "Get event by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Event.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "404", description = "Archived events not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class })))
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<Event> getEventById(@PathVariable("id") Integer eventId) throws EntityNotFoundException {
+        return ResponseEntity.ok(eventService.getById(eventId));
+    }
 }

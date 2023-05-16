@@ -10,6 +10,7 @@ import com.pfr.pfr.promo.dto.PromoWithBookings;
 import com.pfr.pfr.promo.dto.PromoDTO;
 import com.pfr.pfr.promo.dto.PromoWithEvents;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -28,19 +29,12 @@ public class PromoService {
     @Autowired
     private EventService eventService;
 
+    @Lazy
     @Autowired
     private BookingService bookingService;
 
     public List<Promo> getAll() {
         return promoRepository.findAll();
-    }
-
-    public Promo getById(int promoId) {
-        Optional<Promo> promo =promoRepository.findById(promoId);
-        if (promo.isPresent()) {
-            return promo.get();
-        }
-        throw new EntityNotFoundException("User with ID %d not found".formatted(promoId));
     }
 
     public PromoWithEvents getPromoWithEvents(int promoId){

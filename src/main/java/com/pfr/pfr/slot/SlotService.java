@@ -7,8 +7,12 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLOutput;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javax.management.InstanceAlreadyExistsException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -21,7 +25,6 @@ public class SlotService {
 
     public List<Slot> getAllArchived() { return slotRepository.findSlotByIsArchivedTrue(); }
 
-
     public Slot getById(Integer slotId) {
         Optional<Slot> slot = slotRepository.findById(slotId);
         if (slot.isPresent()) {
@@ -30,6 +33,11 @@ public class SlotService {
         throw new EntityNotFoundException("Slot with ID %d not found".formatted(slotId));
     }
 
+    public List<Slot> getByDate(LocalDate date) {
+        String dayInFrench = date.format(DateTimeFormatter.ofPattern("EEEE", Locale.FRENCH));
+        List<Slot> daySlots = slotRepository.findAll().stream().filter(slot -> slot.getWeekDay().equalsIgnoreCase(dayInFrench)).toList();
+        return daySlots;
+    }
 
     public Slot saveSlot(Slot slot) throws InstanceAlreadyExistsException {
         List<Slot> slots = slotRepository.findAll();
@@ -38,7 +46,6 @@ public class SlotService {
         }
         return slotRepository.save(slot);
     }
-
 
     public Slot updateSlot(int slotId, SlotDTO slotDTO) throws InstanceAlreadyExistsException {
         Optional<Slot> slot = slotRepository.findById(slotId);
@@ -76,6 +83,5 @@ public class SlotService {
             return slotRepository.save(slot);
         }
         throw new EntityNotFoundException("Slot with ID %d not found".formatted(slotId));
-
     }
 }

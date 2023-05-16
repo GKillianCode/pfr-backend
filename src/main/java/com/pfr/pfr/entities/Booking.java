@@ -25,21 +25,32 @@ public class Booking {
     private LocalDate bookingDate;
 
     @ManyToOne
-    @JoinColumn(name ="classroom_id")
+    @JoinColumn(name ="classroom_id", insertable = false, updatable = false)
     private Classroom classroom;
 
+    @Column(name = "classroom_id")
+    private Integer classroomId;
+
     @ManyToOne
-    @JoinColumn(name="slot_id")
+    @JoinColumn(name="slot_id", insertable = false, updatable = false)
     private Slot slot;
 
+    @Column(name = "slot_id")
+    private Integer slotId;
+
     @ManyToOne
-    @JoinColumn(name="event_id")
+    @JoinColumn(name="event_id", insertable = false, updatable = false)
     private Event event;
 
+    @Column(name = "event_id")
+    private Integer eventId;
+
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="user_id", insertable = false, updatable = false)
     private User user;
 
+    @Column(name = "user_id")
+    private Integer userId;
 
     public Booking(LocalDate bookingDate, Classroom classroom, Slot slot, Event event, User user) {
         this.bookingDate = bookingDate;

@@ -3,11 +3,13 @@ package com.pfr.pfr.event;
 import com.pfr.pfr.entities.Booking;
 import com.pfr.pfr.entities.Event;
 import com.pfr.pfr.entities.repository.BookingRepository;
+import com.pfr.pfr.entities.Promo;
 import com.pfr.pfr.entities.repository.EventRepository;
 import com.pfr.pfr.event.dto.EventDTO;
 import com.pfr.pfr.event.dto.EventWithBookings;
 import com.pfr.pfr.event_type.EventTypeService;
 import com.pfr.pfr.promo.PromoService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,14 @@ public class EventService {
     public List<Event> getAll() { return eventRepository.findEventByIsArchivedFalse(); }
 
     public List<Event> getAllArchived() { return eventRepository.findEventByIsArchivedTrue(); }
+
+    public Event getById(int eventId) {
+        Optional<Event> event = eventRepository.findById(eventId);
+        if (event.isPresent()) {
+            return event.get();
+        }
+        throw new EntityNotFoundException("Event with ID %d not found".formatted(eventId));
+    }
 
     public List<Event> getEventsForPromo(int promoId) {
         return eventRepository.findByPromoId(promoId);

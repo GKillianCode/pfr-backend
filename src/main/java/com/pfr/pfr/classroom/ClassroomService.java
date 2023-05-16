@@ -4,9 +4,16 @@ import com.pfr.pfr.booking.BookingService;
 import com.pfr.pfr.classroom.dto.ClassroomWithBookings;
 import com.pfr.pfr.entities.Booking;
 import com.pfr.pfr.entities.Classroom;
+import com.pfr.pfr.entities.User;
 import com.pfr.pfr.entities.repository.ClassroomRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
@@ -21,11 +28,19 @@ public class ClassroomService {
     @Autowired
     private ClassroomRepository classroomRepository;
 
-    //@Lazy
+    @Lazy
     @Autowired
     private BookingService bookingService;
 
     public List<Classroom> getAll() { return classroomRepository.findAll(); }
+
+    public Classroom getById(int id) {
+        Optional<Classroom> classroom = classroomRepository.findById(id);
+        if (classroom.isPresent()) {
+            return classroom.get();
+        }
+        throw new EntityNotFoundException("Classroom with ID %d not found".formatted(id));
+    }
 
     public List<Integer> getAllDistinctCapacities() {
         return classroomRepository.findDistinctCapacitiesOrderByCapacityAsc();
