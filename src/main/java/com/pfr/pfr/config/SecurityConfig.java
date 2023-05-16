@@ -40,12 +40,13 @@ public class SecurityConfig {
                     try {
                         custom.requestMatchers(HttpMethod.POST, "/login").permitAll()
                                 .requestMatchers( HttpMethod.GET,
-                                        "/api/**",
                                         "/v3/api-docs",
                                         "/swagger-resources/**",
                                         "/swagger-ui.html**",
                                         "/webjars/**",
                                         "favicon.ico",
+                                        "/swagger-ui/**",
+                                        "/v3/**",
                                         "/**"
                                 ).permitAll()
                                 .anyRequest().authenticated()
@@ -65,12 +66,13 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer(){
         return (web) -> web.ignoring().requestMatchers(
                 "/api/security/resetPassword",
-                "/api/**",
                 "/login",
                 "/v3/api-docs",
                 "/swagger-resources/**",
                 "/swagger-ui.html**",
                 "/webjars/**",
+                "/swagger-ui/**",
+                "/v3/**",
                 "favicon.ico"
         );
     }
