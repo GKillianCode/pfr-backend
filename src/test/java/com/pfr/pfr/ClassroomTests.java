@@ -148,6 +148,23 @@ public class ClassroomTests {
     }
 
     @Test
+    void testGetAllClassroomsAndItsBookingsByDateAndSlots() throws Exception {
+
+        List<Booking> getBookingsByService = bookingService.getBookingsByClassroom(1);
+        ClassroomWithBookings cWB = classroomService.getClassroomWithBookings(1);
+
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/classroom/all/bookings?weekNumber=19&year=2023");
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        String contentAsString = mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+
+        List<ClassroomWithBookings> classroomWithBookings = Arrays.asList(objectMapper.readValue(contentAsString, ClassroomWithBookings[].class));
+
+        assert classroomWithBookings.contains(cWB);
+    }
+
+    @Test
     @Transactional
     void testPostClassroomAPI() throws Exception {
         Location location = new Location("Tours Mame", "49 Bd Preuilly", "37000", "Tours");

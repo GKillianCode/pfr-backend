@@ -4,14 +4,9 @@ import com.pfr.pfr.booking.BookingService;
 import com.pfr.pfr.classroom.dto.ClassroomWithBookings;
 import com.pfr.pfr.entities.Booking;
 import com.pfr.pfr.entities.Classroom;
-import com.pfr.pfr.entities.User;
+import com.pfr.pfr.entities.repository.BookingRepository;
 import com.pfr.pfr.entities.repository.ClassroomRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Example;
@@ -19,6 +14,10 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import javax.management.InstanceAlreadyExistsException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +26,9 @@ public class ClassroomService {
 
     @Autowired
     private ClassroomRepository classroomRepository;
+
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @Lazy
     @Autowired
@@ -68,6 +70,18 @@ public class ClassroomService {
             return new ClassroomWithBookings(classroom.get(), listBookings);
         }
         throw new EntityNotFoundException("Classroom with ID %d not found".formatted(classroomId));
+    }
+
+    public List<ClassroomWithBookings> getAllClassroomsWithBookingByDateAndBySlot(Integer weekNumber, Integer year) {
+        List<Classroom> allActiveClassrooms = classroomRepository.findAll();
+        List<ClassroomWithBookings> allClassroomsWithBookings = new ArrayList<>();
+        LocalDate startDate = LocalDate.ofYearDay(year, 1).with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY)).plusWeeks(weekNumber - 1);
+        LocalDate endDate = startDate.plusDays(6);
+        allActiveClassrooms.stream()
+                .forEach(
+                        classroom -> allClassroomsWithBookings
+                                .add(new ClassroomWithBookings(classroom, bookingRepository.findByClassroomIdAndBookingDateBetweenOrderByBookingDateAscSlotAsc(classroom.getId(), startDate, endDate))));
+        return allClassroomsWithBookings;
     }
 
     public Classroom saveClassroom(Classroom classroom) throws InstanceAlreadyExistsException {
