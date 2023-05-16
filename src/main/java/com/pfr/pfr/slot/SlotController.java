@@ -1,7 +1,6 @@
 package com.pfr.pfr.slot;
 
 import com.pfr.pfr.entities.Slot;
-import com.pfr.pfr.entities.Slot;
 import com.pfr.pfr.exceptions.ExceptionMessage;
 import com.pfr.pfr.slot.dto.SlotDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/slot")
+@Tag(name = "Slot")
 @Validated
 @CrossOrigin(origins = {"${app.api.settings.cross-origin.url}"})
 public class SlotController {

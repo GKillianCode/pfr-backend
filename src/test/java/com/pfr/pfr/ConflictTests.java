@@ -90,7 +90,7 @@ public class ConflictTests {
                 "Reunion de l'equipe de developpement pour discuter des projets en cours.",
                 10,
                 new EventType("Réunion", false),
-                new Promo("TLOG_1", 19, true));
+                new Promo("TLOG_1", 16, true));
 
         User jason = new User("Jason", "Jensen", "jj@gmail.com", "12345", true, roleFormateur);
 

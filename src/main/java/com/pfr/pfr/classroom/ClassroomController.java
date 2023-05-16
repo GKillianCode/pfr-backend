@@ -2,14 +2,13 @@ package com.pfr.pfr.classroom;
 
 import com.pfr.pfr.classroom.dto.ClassroomWithBookings;
 import com.pfr.pfr.entities.Classroom;
-import com.pfr.pfr.entities.Promo;
 import com.pfr.pfr.exceptions.ExceptionMessage;
-import com.pfr.pfr.promo.dto.PromoDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/classroom")
+@Tag(name = "Classroom")
 @Validated
 @CrossOrigin(origins = {"${app.api.settings.cross-origin.url}"})
 public class ClassroomController {
@@ -139,15 +139,47 @@ public class ClassroomController {
                     ExceptionMessage.class })))
     })
     @PostMapping("/filter")
-    public List<Classroom> filterSalle(@RequestBody Classroom json){
+    public List<Classroom> filterClassroom(@RequestBody Classroom json){
         return classroomService.filterClassroom(json);
     }
 
+    @Operation(summary = "add a new classroom")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Classroom.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "404", description = "Classroom not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "409", description = "Classroom with same name already exists", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class })))
+    })
     @PostMapping("")
     public ResponseEntity<Classroom> saveClassroom(@RequestBody Classroom newClassroom) throws InstanceAlreadyExistsException {
         return ResponseEntity.ok(classroomService.saveClassroom(newClassroom));
     }
 
+    @Operation(summary = "update an existing classroom")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Classroom.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "404", description = "Classroom not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "409", description = "Classroom with same name already exists", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class })))
+    })
     @PatchMapping("/{id}")
     public ResponseEntity<Classroom> updateClassroom(
             @PathVariable("id") Integer classroomId ,
@@ -156,12 +188,44 @@ public class ClassroomController {
         return ResponseEntity.ok(classroomService.updateClassroom(classroomId, classroomDTO));
     }
 
+    @Operation(summary = "Delete a classroom")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Classroom.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "404", description = "Classroom not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "409", description = "Classroom with same name already exists", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class })))
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClassroom(@PathVariable("id") Integer classroomId) {
         classroomService.deleteClassroom(classroomId);
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "archive an existing classroom")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Classroom.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "404", description = "Classroom not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "409", description = "Classroom with same name already exists", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class })))
+    })
     @PatchMapping("/archive/{id}")
     public ResponseEntity<Void> archiveClassroom(@PathVariable("id") Integer classroomId) {
         classroomService.archiveClassroom(classroomId);
