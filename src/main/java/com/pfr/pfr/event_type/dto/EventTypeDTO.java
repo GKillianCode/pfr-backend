@@ -1,38 +1,35 @@
-package com.pfr.pfr.entities;
+package com.pfr.pfr.event_type.dto;
 
-import jakarta.persistence.*;
+import com.pfr.pfr.entities.EventType;
+import jakarta.persistence.Column;
 import jdk.jfr.BooleanFlag;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "event_type")
+import java.util.Objects;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"name", "isExceptionalClosure", "isArchived"})
-public class EventType {
+public class EventTypeDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
-
-    @Column(name ="name")
     private String name;
-    
-    @Column(name = "is_exceptional_closure")
+
     private Boolean isExceptionalClosure;
 
-    @Column(name = "is_archived")
     @BooleanFlag
     private Boolean isArchived;
 
-    public EventType(String name, Boolean isExceptionalClosure) {
+    public EventTypeDTO(String name, Boolean isExceptionalClosure) {
         this.name = name;
         this.isExceptionalClosure = isExceptionalClosure;
-        this.isArchived = false;
     }
+
+    public boolean equalsEventType(EventType eventType) {
+        return Objects.equals(name, eventType.getName()) && Objects.equals(isExceptionalClosure, eventType.getIsExceptionalClosure());
+    }
+
 }
