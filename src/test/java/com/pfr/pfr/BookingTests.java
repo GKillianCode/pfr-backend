@@ -132,58 +132,71 @@ public class BookingTests {
     }
 
     @Test
+    @Transactional
     void testSaveBookingByAPI() throws Exception {
-        LocalDate date = LocalDate.of(2025, 4, 10);
-        Integer slotId = slotService.getByDate(date).get(0).getId();
+        // 5 février 2024 => lundi
+        LocalDate date1 = LocalDate.of(2024, 2, 5);
+        Integer slotId1 = slotService.getByDate(date1).get(0).getId();
+
+        // 4 mars 2024 => lundi
+        LocalDate date2 = LocalDate.of(2024, 3, 4);
+        Integer slotId2 = slotService.getByDate(date2).get(0).getId();
 
         Location location = locationService.getAll().get(0);
-
-        Classroom classroomSmall = new Classroom("TestSmall", 2, location, true);
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/classroom").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(classroomSmall)));
-
-        Classroom classroomBig = new Classroom("TestBig", 200, location, true);
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/classroom").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(classroomBig)));
-
-        Integer classroomSmallId = classroomService.getClassroomByExactName("TestSmall").get(0).getId();
-        Integer classroomBigId = classroomService.getClassroomByExactName("TestBig").get(0).getId();
-
-        Promo promo = new Promo("CDA_1_2025", 30, true);
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/promo").contentType("application/json").content(objectMapper.writeValueAsString(promo)));
-
         EventType eventType = eventTypeService.getAll().get(0);
+        Integer userId = userService.getAll().get(0).getId();
+
+        Classroom classroom1 = classroomService.getAll().get(0);
+        int capacityClassroom1 = classroom1.getCapacity();
+
+        // Récupération d'une promo
+        Promo promo = promoService.getAll().get(0);
+        int promoEffectif = promo.getStudentsNumber();
+
+        // Création de 2 classrooms
+        Classroom classroomSmall = new Classroom("ClassroomSmall", 2, location, true);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/classroom").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(classroomSmall)));
+        Classroom classroomBig = new Classroom("ClassroomBig", 200, location, true);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/classroom").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(classroomBig)));
+        Integer classroomSmallId = classroomService.getClassroomByExactName("ClassroomSmall").get(0).getId();
+        Integer classroomBigId = classroomService.getClassroomByExactName("ClassroomBig").get(0).getId();
+
+        // Création event basique pour 2
         Event event1 = new Event(
                 "Event test 1",
                 null,
                 null,
                 null,
                 null,
-                "description",
+                "description test 1",
                 2,
                 eventType,
                 null
         );
-        mockMvc.perform(MockMvcRequestBuilders.post("api/event").contentType("application/json").content(objectMapper.writeValueAsString(event1)));
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/event").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(event1)));
 
+        // Création event sans effectif (doit se baser sur effectif promo)
         Event event2 = new Event(
-                "Event test 1",
+                "Event test 2",
                 null,
                 null,
                 null,
                 null,
-                "description",
-                2,
+                "description test 2",
+                null,
                 eventType,
                 promo
         );
-        mockMvc.perform(MockMvcRequestBuilders.post("api/event").contentType("application/json").content(objectMapper.writeValueAsString(event2)));
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/event").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(event2)));
 
-        Integer eventId1 = eventService.getAll().stream().filter(event -> event.equals(event1)).findFirst().orElseGet(null).getId();
-        Integer eventId2 = eventService.getAll().stream().filter(event -> event.equals(event2)).findFirst().orElseGet(null).getId();
+        List<Event> eventList = eventService.getAll();
+        Event event1Recup = eventList.stream().filter(event -> event.equals(event1)).findFirst().orElse(null);
+        int event1RecupId = event1Recup.getId();
+        Event event2Recup = eventList.stream().filter(event -> event.equals(event2)).findFirst().orElse(null);
+        int event2RecupId = event2Recup.getId();
 
-        Integer userId = userService.getAll().get(0).getId();
-
-        BookingDTO newBookingDTO1 = new BookingDTO(date, classroomSmallId, slotId, eventId1, userId);
-        BookingDTO newBookingDTO2 = new BookingDTO(date, classroomBigId, slotId, eventId2, userId);
+        // Création booking dans classroom de 2 et event pour 2 -> ça passe
+        BookingDTO newBookingDTO1 = new BookingDTO(date1, classroomSmallId, slotId1, event1RecupId, userId);
 
         RequestBuilder request1 = MockMvcRequestBuilders.post("/api/booking")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -193,6 +206,9 @@ public class BookingTests {
                 .andExpect(resultStatus1)
                 .andReturn().getResponse().getContentAsString();
 
+        // Création booking dans classroom de 200 et event pour effectif promo -> ça passe
+        BookingDTO newBookingDTO2 = new BookingDTO(date1, classroomBigId, slotId1, event2RecupId, userId);
+
         RequestBuilder request2 = MockMvcRequestBuilders.post("/api/booking")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newBookingDTO2));
@@ -201,12 +217,24 @@ public class BookingTests {
                 .andExpect(resultStatus2)
                 .andReturn().getResponse().getContentAsString();
 
+        // Création booking dans classroom de 2 et event pour effectif promo -> ça ne doit pas passer
+//        BookingDTO newBookingDTO3 = new BookingDTO(date2, classroomSmallId, slotId2, event2RecupId, userId);
+//
+//        RequestBuilder request3 = MockMvcRequestBuilders.post("/api/booking")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(objectMapper.writeValueAsString(newBookingDTO3));
+//        ResultMatcher resultStatus3 = MockMvcResultMatchers.status().isConflict();
+//        String contentAsString3 = mockMvc.perform(request3)
+//                .andExpect(resultStatus3)
+//                .andReturn().getResponse().getContentAsString();
 
         BookingDTO bookingDTO1 = objectMapper.readValue(contentAsString1, BookingDTO.class);
         BookingDTO bookingDTO2 = objectMapper.readValue(contentAsString2, BookingDTO.class);
+//        BookingDTO bookingDTO3 = objectMapper.readValue(contentAsString3, BookingDTO.class);
 
         assert bookingDTO1.equals(newBookingDTO1);
         assert bookingDTO2.equals(newBookingDTO2);
+//        assert !bookingService.getAll().contains(bookingDTO3);
     }
 
 //    @Test

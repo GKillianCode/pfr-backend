@@ -67,7 +67,7 @@ public class PromoService {
     public Promo savePromo(Promo promo) throws InstanceAlreadyExistsException {
         List<Promo> promoList = getPromoByExactName(promo.getName());
         if (promoList.size() > 0) {
-            throw new EntityExistsException("Promo with name %s already exists".formatted(promo.getName()));
+            throw new InstanceAlreadyExistsException("Promo with name %s already exists".formatted(promo.getName()));
         }
         return promoRepository.save(promo);
     }
@@ -76,14 +76,14 @@ public class PromoService {
         return promoRepository.findPromoByNameEqualsIgnoreCase(promoName);
     }
 
-    public Promo updatePromo(int promoId, PromoDTO promoDTO) {
+    public Promo updatePromo(int promoId, PromoDTO promoDTO) throws InstanceAlreadyExistsException {
         Optional<Promo> promo = promoRepository.findById(promoId);
         if (promo.isPresent()){
             if (promoDTO.getName() != null) {
                 // Vérification que le nouveau nom n'est pas déjà existant en base
                 List<Promo> promoList = getPromoByExactName(promoDTO.getName());
                 if (promoList.size() > 0) {
-                    throw new EntityExistsException("Promo with name %s already exists".formatted(promoDTO.getName()));
+                    throw new InstanceAlreadyExistsException("Promo with name %s already exists".formatted(promoDTO.getName()));
                 }
                 promo.get().setName(promoDTO.getName());
             }

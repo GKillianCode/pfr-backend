@@ -98,8 +98,6 @@ public class BookingService {
                     return bookingRepository.save(bookingDTO.toEntity());
                 }
             }
-        } else {
-            throw new IllegalArgumentException("Classroom capacity toot small");
         }
         return null;
     }
@@ -169,7 +167,7 @@ public class BookingService {
 
     // Vérification de la capacité par rapport aux participants
     public Boolean checkCapacityNeeded(BookingDTO bookingDTO) {
-        int capacityClassroom = 0; // valeur arbitraire correspondant à "illimité"
+        int capacityClassroom = 1000; // valeur arbitraire correspondant à "illimité"
         int capacityNeeded = 0;
 
         // Récupération de la capacité nécessaire (ordre priorité : 1-event.participantsNumbrer, 2-promo.studentsNumber)
@@ -187,10 +185,10 @@ public class BookingService {
             capacityClassroom = classroomService.getById(bookingDTO.getClassroomId()).getCapacity();
         }
 
-        if (capacityClassroom >= capacityNeeded) {
-            return true;
+        if (capacityClassroom < capacityNeeded) {
+            throw new IllegalArgumentException("Classroom capacity too small");
         }
-        return false;
+        return true;
     }
 
 }

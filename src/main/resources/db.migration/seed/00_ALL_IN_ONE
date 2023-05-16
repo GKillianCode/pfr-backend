@@ -30,6 +30,7 @@ VALUES
     ('TLOG_2_2023', 12, 0);
 
 
+
 INSERT INTO `trainer_promo` (`id`, `promo_id`, `user_id`)
 VALUES
     (NULL, '1', '1'),
@@ -173,6 +174,7 @@ VALUES(
 
 
 
+
 INSERT INTO booking (booking_date, classroom_id, slot_id, event_id, user_id)
 VALUES
 	('2023-05-10', 1, 1, 1, 1),
@@ -198,6 +200,7 @@ VALUES
 
 
 
+
 INSERT INTO conflict (comment, created_at, booking_id, user_id, event_id)
 VALUES
     ('Besoin urgent pour une reunion importante', '2023-05-10 09:30:00', 1, 4, 7),
@@ -210,3 +213,4 @@ VALUES
     ('Delai serre pour le projet', '2023-05-03 12:30:00', 8, 3, 8),
     ('Reservation accidentelle', '2023-05-02 17:15:00', 9, 4, 9),
     ('Mise à jour de derniere minute', '2023-05-01 14:45:00', 10, 5, 10);
+

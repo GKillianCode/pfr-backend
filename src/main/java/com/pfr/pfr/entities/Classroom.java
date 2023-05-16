@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"name", "capacity", "location_id"})
+@EqualsAndHashCode(of = {"name", "capacity", "location"})
 public class Classroom {
 
 
@@ -40,5 +40,6 @@ public class Classroom {
         this.capacity = capacity;
         this.location = location;
         this.isBookable = isBookable;
+        this.isArchived = false;
     }
 }
