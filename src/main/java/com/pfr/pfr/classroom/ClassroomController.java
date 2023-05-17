@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.List;
 @Tag(name = "Classroom")
 @Validated
 @CrossOrigin(origins = {"${app.api.settings.cross-origin.url}"})
+@SecurityRequirement(name = "Authorization")
 public class ClassroomController {
 
     @Autowired
@@ -121,6 +123,26 @@ public class ClassroomController {
     public ClassroomWithBookings getClassroomWithBookings(@PathVariable("id") Integer classroomId) {
         return classroomService.getClassroomWithBookings(classroomId);
     }
+
+    @Operation(summary = "Get all classrooms and all of its bookings and slots")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Classroom.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "404", description = "Elements not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class })))
+    })
+    @GetMapping("/all/bookings")
+    public List<ClassroomWithBookings> getAllClassroomsWithBookings(@RequestParam Integer weekNumber, Integer year) {
+        return classroomService.getAllClassroomsWithBookingByDateAndBySlot(weekNumber, year);
+    }
+
 
     @Operation(summary = "allow to filter classroom")
     @ApiResponses(value = {

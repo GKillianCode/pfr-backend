@@ -9,4 +9,5 @@ public interface ConflictRepository extends JpaRepository<Conflict, Integer> {
 
     public List<Conflict> findByBookingId(Integer bookingId);
 
+
 }
