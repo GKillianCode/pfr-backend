@@ -1,16 +1,13 @@
 package com.pfr.pfr.entities.repository;
 
 import com.pfr.pfr.entities.Booking;
-import com.pfr.pfr.entities.Classroom;
-import com.pfr.pfr.entities.Slot;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import org.springframework.data.domain.Pageable;
 
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
@@ -33,5 +30,5 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             @Param("classroomId") Integer classroomId
     );
 
-
+    List<Booking> findByClassroomIdAndBookingDateBetweenOrderByBookingDateAscSlotAsc(Integer id, LocalDate startDate, LocalDate endDate);
 }
