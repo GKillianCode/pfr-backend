@@ -142,4 +142,8 @@ public class ClassroomService {
             throw new EntityNotFoundException("Classroom with ID %d not found".formatted(classroomId));
         }
     }
+
+    public List<Classroom> getBookableClassrooms() {
+        return classroomRepository.findAll().stream().filter(classroom -> classroom.getIsBookable()).toList();
+    }
 }

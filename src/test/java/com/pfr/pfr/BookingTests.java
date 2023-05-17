@@ -242,13 +242,15 @@ public class BookingTests {
     @Test
     @Transactional
     void testUpdateBookingByAPI() throws Exception {
+
         Booking bookingToUpdate = bookingService.getAll().get(0);
+        // Création d'un booking
 
         // 5 février 2024 => lundi
-        LocalDate date = LocalDate.of(2024, 2, 5);
-        Integer slotId = slotService.getByDate(date).get(0).getId();
+        LocalDate newDate = LocalDate.of(2024, 2, 5);
+        Integer newSlotId = slotService.getByDate(newDate).get(0).getId();
 
-        BookingDTO newBookingDTO = new BookingDTO(date, 1, slotId, bookingToUpdate.getEventId(), bookingToUpdate.getUserId());
+        BookingDTO newBookingDTO = new BookingDTO(newDate, 1, newSlotId, bookingToUpdate.getEventId(), bookingToUpdate.getUserId());
 
         RequestBuilder request = MockMvcRequestBuilders.patch("/api/booking/" + bookingToUpdate.getId())
                 .contentType(MediaType.APPLICATION_JSON)

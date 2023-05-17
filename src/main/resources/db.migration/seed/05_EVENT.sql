@@ -17,7 +17,7 @@ VALUES(
     '0123456789',
     'Developpez votre projet en equipe et relevez des defis techniques lors de notre Hackathon.',
     1,
-    50,
+    18,
     5
 ),(
     'Cours de Developpement Web',
