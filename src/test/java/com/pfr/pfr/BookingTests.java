@@ -250,25 +250,24 @@ public class BookingTests {
         LocalDate newDate = LocalDate.of(2024, 2, 5);
         Integer newSlotId = slotService.getByDate(newDate).get(0).getId();
 
-        BookingDTO newBookingDTO = new BookingDTO(newDate, 1, newSlotId, bookingToUpdate.getEventId(), bookingToUpdate.getUserId());
+        BookingDTO updateBookingDTO = new BookingDTO(newDate, bookingToUpdate.getClassroomId(), newSlotId, bookingToUpdate.getEventId(), bookingToUpdate.getUserId());
 
         RequestBuilder request = MockMvcRequestBuilders.patch("/api/booking/" + bookingToUpdate.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(newBookingDTO));
+                .content(objectMapper.writeValueAsString(updateBookingDTO));
         ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
         String contentAsString = mockMvc.perform(request)
                 .andExpect(resultStatus)
                 .andReturn().getResponse().getContentAsString();
 
-        BookingDTO bookingDTO = objectMapper.readValue(contentAsString, BookingDTO.class);
-        assert bookingService.getAll().get(0).equals(bookingDTO.toEntity());
-        //assert bookingDTO.equals(newBookingDTO);
+        assert bookingService.getAll().get(0).getBookingDate().equals(newDate);
+        assert bookingService.getAll().get(0).getSlotId() == newSlotId;
     }
 
     @Test
     @Transactional
     void testDeleteBookingByAPI() throws Exception {
-        List<Conflict> conflictListFull = conflictService.getAll();
+
         List<Booking> bookingListFull = bookingService.getAll();
         int bookingTotalNumber = bookingListFull.size();
 
@@ -286,17 +285,13 @@ public class BookingTests {
         if (bookingToDelete != null) {
             RequestBuilder request = MockMvcRequestBuilders.delete("/api/booking/" + bookingToDelete.getId());
             ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
-            String contentAsString = mockMvc.perform(request)
-                    .andExpect(resultStatus)
-                    .andReturn().getResponse().getContentAsString();
+            mockMvc.perform(request).andExpect(resultStatus);
             assert bookingService.getAll().size() == bookingTotalNumber - 1;
         } else {
             // Sinon on prend un booking avec conflit et on ne peut pas le supprimer
             RequestBuilder request = MockMvcRequestBuilders.delete("/api/booking/" + bookingService.getAll().get(0).getId());
             ResultMatcher resultStatus = MockMvcResultMatchers.status().isConflict();
-            String contentAsString = mockMvc.perform(request)
-                    .andExpect(resultStatus)
-                    .andReturn().getResponse().getContentAsString();
+            mockMvc.perform(request).andExpect(resultStatus);
             assert bookingService.getAll().size() == bookingTotalNumber;
         }
     }
