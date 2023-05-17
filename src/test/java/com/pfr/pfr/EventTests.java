@@ -1,6 +1,7 @@
 package com.pfr.pfr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pfr.pfr.booking.BookingService;
 import com.pfr.pfr.entities.Event;
 import com.pfr.pfr.entities.EventType;
 import com.pfr.pfr.entities.Promo;
@@ -41,6 +42,9 @@ public class EventTests {
     private PromoService promoService;
 
     @Autowired
+    private BookingService bookingService;
+
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
@@ -67,14 +71,14 @@ public class EventTests {
 
         List<Event> events = Arrays.asList(objectMapper.readValue(contentAsString, Event[].class));
 
-        Event hackathon = new Event("Hackathon TechDays",
-                "John",
-                "Doe",
-                "johndoe@email.com",
-                "0123456789",
-                "Developpez votre projet en equipe et relevez des defis techniques lors de notre Hackathon.",
-                50,
-                new EventType("Hackathon", false),
+        Event hackathon = new Event("Entretien",
+                "Jenny",
+                "Jensen",
+                "jenjen@gmail.com",
+                "111111111",
+                "Entretien individuel avec les étudiants",
+                2,
+                new EventType("Entretien", false),
                 new Promo("CDA_2_2022", 13, true));
 
         assert events.contains(hackathon);
@@ -82,7 +86,8 @@ public class EventTests {
 
     @Test
     void testGetEventWithBookings() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get("/api/event/1/bookings");
+        int eventId = 1;
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/event/"+eventId+"/bookings");
         ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
         String contentAsString = mockMvc.perform(request)
                 .andExpect(resultStatus)
@@ -90,17 +95,8 @@ public class EventTests {
 
         EventWithBookings eventWithBookings = objectMapper.readValue(contentAsString, EventWithBookings.class);
 
-        Event hackathon = new Event("Hackathon TechDays",
-                "John",
-                "Doe",
-                "johndoe@email.com",
-                "0123456789",
-                "Developpez votre projet en equipe et relevez des defis techniques lors de notre Hackathon.",
-                50,
-                new EventType("Hackathon", false),
-                new Promo("CDA_2_2022", 13, true));
 
-        assert eventWithBookings.getEvent().getName().equals(hackathon.getName());
+        assert eventWithBookings.equals(eventService.getEventWithBookings(eventId));
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.pfr.pfr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pfr.pfr.classroom.ClassroomService;
+import com.pfr.pfr.conflict.ConflictService;
 import com.pfr.pfr.conflict.dto.ConflictDTO;
 import com.pfr.pfr.entities.*;
 import jakarta.transaction.TransactionScoped;
@@ -33,6 +34,10 @@ public class ConflictTests {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private ConflictService conflictService;
+
     @Autowired
     private WebApplicationContext webApplicationContext;
     @BeforeEach
@@ -55,53 +60,7 @@ public class ConflictTests {
 
         List<Conflict> conflicts = Arrays.asList(objectMapper.readValue(contentAsString, Conflict[].class));
 
-        Location toursMame = new Location("Tours Mame", "49 Bd Preuilly", "37000", "Tours");
-        Classroom salle1 = new Classroom("Salle 1", 15, toursMame, false);
-
-        Slot lundiMatin = new Slot("lundi", "matin", true);
-        EventType hackathon = new EventType("Hackathon", false);
-
-        Promo cda22022 = new Promo("CDA_2_2022", 13, true);
-
-        Event hackathonTechDays = new Event(
-                "Hackathon TechDays",
-                "John", "Doe",
-                "johndoe@email.com",
-                "0123456789",
-                "Developpez votre projet en equipe et relevez des defis techniques lors de notre Hackathon.",
-                50,
-                hackathon,
-                cda22022
-                );
-
-        Role roleFormateur = new Role("ROLE_FORMATEUR");
-
-        Booking booking = new Booking(
-                LocalDate.of(2023, 5, 10),
-                salle1,
-                lundiMatin,
-                hackathonTechDays,
-                new User("John", "Doe", "johndoe@gmail.com", "root", true, roleFormateur)
-        );
-
-        Event reunion = new Event(
-                "Reunion equipe developpement",
-                "Alexandre",
-                "Meyer",
-                "alexandremeyer@email.com",
-                "0123456789",
-                "Reunion de l'equipe de developpement pour discuter des projets en cours.",
-                10,
-                new EventType("Réunion", false),
-                new Promo("TLOG_1", 16, true));
-
-        User jason = new User("Jason", "Jensen", "jj@gmail.com", "12345", true, roleFormateur);
-
-        Conflict conflict = new Conflict("Besoin urgent pour une reunion importante",
-                LocalDateTime.of(2023, 5, 10, 9, 30, 0),
-                booking,
-                jason,
-                reunion);
+        Conflict conflict = conflictService.getById(1);
         assert conflicts.contains(conflict);
     }
 
