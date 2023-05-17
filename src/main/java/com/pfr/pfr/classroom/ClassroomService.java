@@ -86,6 +86,19 @@ public class ClassroomService {
         return allClassroomsWithBookings;
     }
 
+    public ClassroomWithBookings getClassroomWithBookingByDateAndBySlot(Integer classroomId, Integer weekNumber, Integer year) {
+        Optional<Classroom> classroom = classroomRepository.findById(classroomId);
+        if(classroom.isPresent()){
+            LocalDate startDate = LocalDate.ofYearDay(year, 1).with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY)).plusWeeks(weekNumber - 1);
+            LocalDate endDate = startDate.plusDays(6);
+
+            List<Booking> bookings = bookingRepository.findByClassroomIdAndBookingDateBetweenOrderByBookingDateAscSlotAsc(classroomId, startDate, endDate);
+            return new ClassroomWithBookings(classroom.get(), bookings);
+        }
+
+        throw new EntityNotFoundException("Classroom with ID %d not found".formatted(classroomId));
+    }
+
     public Classroom saveClassroom(Classroom classroom) throws InstanceAlreadyExistsException {
         List<Classroom> classroomList = getClassroomByExactName(classroom.getName());
         if (classroomList.size() > 0) {

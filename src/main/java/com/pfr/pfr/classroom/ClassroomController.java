@@ -155,6 +155,10 @@ public class ClassroomController {
         return classroomService.getAllClassroomsWithBookingByDateAndBySlot(weekNumber, year);
     }
 
+    @GetMapping("/bookings")
+    public ClassroomWithBookings getClassroomWithBookings(@RequestParam("classRoomId") Integer id, @RequestParam("weekNumber") Integer weekNumber, @RequestParam("year") Integer year) {
+        return classroomService.getClassroomWithBookingByDateAndBySlot(id, weekNumber, year);
+    }
 
     @Operation(summary = "allow to filter classroom")
     @ApiResponses(value = {
