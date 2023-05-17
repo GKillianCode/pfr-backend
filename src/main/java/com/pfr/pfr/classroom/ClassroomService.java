@@ -34,7 +34,9 @@ public class ClassroomService {
     @Autowired
     private BookingService bookingService;
 
-    public List<Classroom> getAll() { return classroomRepository.findAll(); }
+    public List<Classroom> getAll() { return classroomRepository.findClassroomByIsArchivedFalse(); }
+
+    public List<Classroom> getAllArchived() { return classroomRepository.findClassroomByIsArchivedTrue(); }
 
     public Classroom getById(int id) {
         Optional<Classroom> classroom = classroomRepository.findById(id);

@@ -36,6 +36,8 @@ public class ClassroomController {
                             schema = @Schema(implementation = Classroom.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
             @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
             @ApiResponse(responseCode = "404", description = "Classrooms not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
@@ -52,6 +54,8 @@ public class ClassroomController {
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Classroom.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
             @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
@@ -71,6 +75,8 @@ public class ClassroomController {
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Classroom.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
             @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
@@ -92,6 +98,8 @@ public class ClassroomController {
                             schema = @Schema(implementation = Classroom.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
             @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
             @ApiResponse(responseCode = "404", description = "Classrooms by capacity not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
@@ -112,6 +120,8 @@ public class ClassroomController {
                             schema = @Schema(implementation = Classroom.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
             @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
             @ApiResponse(responseCode = "404", description = "Bookings by classroom not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
@@ -130,6 +140,8 @@ public class ClassroomController {
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Classroom.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
             @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
@@ -150,6 +162,8 @@ public class ClassroomController {
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Classroom.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
             @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
@@ -172,6 +186,8 @@ public class ClassroomController {
                             schema = @Schema(implementation = Classroom.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
             @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
             @ApiResponse(responseCode = "404", description = "Classroom not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
@@ -192,6 +208,8 @@ public class ClassroomController {
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Classroom.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
             @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
@@ -217,6 +235,8 @@ public class ClassroomController {
                             schema = @Schema(implementation = Classroom.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
             @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
             @ApiResponse(responseCode = "404", description = "Classroom not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
@@ -239,6 +259,8 @@ public class ClassroomController {
                             schema = @Schema(implementation = Classroom.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
             @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
                     ExceptionMessage.class }))),
             @ApiResponse(responseCode = "404", description = "Classroom not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
@@ -253,4 +275,23 @@ public class ClassroomController {
         classroomService.archiveClassroom(classroomId);
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "Get all archived classrooms")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Classroom.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "404", description = "Archived classrooms not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class })))
+    })
+    @GetMapping("/all/archived")
+    public List<Classroom> getAllArchivedClassrooms() { return classroomService.getAllArchived(); }
 }
