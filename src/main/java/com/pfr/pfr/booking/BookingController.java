@@ -114,4 +114,24 @@ public class BookingController {
     ) {
         return ResponseEntity.ok(bookingService.updateBooking(bookingId, newBookingDTO));
     }
+
+    @Operation(summary = "Delete booking")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Booking.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid supplied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "403", description = "Access denied", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "404", description = "Bookings not found", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class }))),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {
+                    ExceptionMessage.class })))
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBooking(@PathVariable("id") Integer bookingId) {
+        bookingService.deleteBooking(bookingId);
+        return ResponseEntity.ok().build();
+    }
 }

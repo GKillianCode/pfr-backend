@@ -4,6 +4,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -47,6 +48,12 @@ public class ExceptionHandlerControllerAdvice {
 
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<ExceptionMessage> entityExistsException(HttpServletRequest request,EntityExistsException exception) {
+        ExceptionMessage exceptionMessage = new ExceptionMessage(request.getRequestURI(), exception.getMessage(), exception.getClass().getName());
+        return new ResponseEntity<>(exceptionMessage, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ExceptionMessage> dataIntegrityViolationException(HttpServletRequest request,DataIntegrityViolationException exception) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(request.getRequestURI(), exception.getMessage(), exception.getClass().getName());
         return new ResponseEntity<>(exceptionMessage, HttpStatus.CONFLICT);
     }
