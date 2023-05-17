@@ -93,15 +93,25 @@ public class PromoTests {
         Promo cda = new Promo("CDA_2_2022", 13, true);
 
         ArrayList<Event> cdaEvents = new ArrayList<>();
-        cdaEvents.add(new Event("Hackathon TechDays",
-                    "John",
-                    "Doe",
-                    "johndoe@email.com",
-                    "0123456789",
-                    "Developpez votre projet en equipe et relevez des defis techniques lors de notre Hackathon.",
-                    50,
-                    new EventType("Hackathon", false),
-                    cda));
+        cdaEvents.add(new Event("Entretien",
+                "Jenny",
+                "Jensen",
+                "jenjen@gmail.com",
+                "111111111",
+                "Entretien individuel avec les étudiants",
+                2,
+                new EventType("Entretien", false),
+                cda));
+
+        cdaEvents.add(new Event("Cours de bases de données",
+                "Marie",
+                "Dubois",
+                "marie.dubois@example.com",
+                "9876543210",
+                "Conception, modélisation et gestion de bases de données relationnelles",
+                13,
+                new EventType("Cours", false),
+                cda));
 
         assert promoWithEvent.equals(new PromoWithEvents(cda, cdaEvents));
     }

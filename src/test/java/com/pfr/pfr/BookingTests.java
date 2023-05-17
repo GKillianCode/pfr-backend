@@ -93,20 +93,20 @@ public class BookingTests {
 
         Slot lundiMatin = new Slot("lundi", "matin", true);
 
-        Event hackathon = new Event("Hackathon TechDays",
+        Event hackathon = new Event("Hackathon CDA",
                 "John",
                 "Doe",
-                "johndoe@email.com",
-                "0123456789",
-                "Developpez votre projet en equipe et relevez des defis techniques lors de notre Hackathon.",
-                50,
+                "johndoe@gmail.com",
+                "123456789",
+                "Un hackathon pour les étudiants de la promo CDA",
+                14,
                 new EventType("Hackathon", false),
-                new Promo("CDA_2_2022", 13, true));
+                new Promo("CDA", 13, true));
 
         User johnDoe = new User("John", "Doe", "johndoe@gmail.com", "root", true, new Role("ROLE_FORMATEUR"));
 
         Booking booking = new Booking(
-                LocalDate.of(2023, 5, 10),
+                LocalDate.of(2023, 5, 15),
                 salle1,
                 lundiMatin,
                 hackathon,

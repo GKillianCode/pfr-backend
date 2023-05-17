@@ -24,6 +24,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
 import java.util.List;
 
@@ -150,18 +153,26 @@ public class ClassroomTests {
     @Test
     void testGetAllClassroomsAndItsBookingsByDateAndSlots() throws Exception {
 
-        List<Booking> getBookingsByService = bookingService.getBookingsByClassroom(1);
-        ClassroomWithBookings cWB = classroomService.getClassroomWithBookings(1);
-
-        RequestBuilder request = MockMvcRequestBuilders.get("/api/classroom/all/bookings?weekNumber=19&year=2023");
+        Integer year = 2023;
+        Integer weekNumber = 20;
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/classroom/all/bookings?weekNumber="+weekNumber+"&year=" + year);
         ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
         String contentAsString = mockMvc.perform(request)
                 .andExpect(resultStatus)
                 .andReturn().getResponse().getContentAsString();
 
-        List<ClassroomWithBookings> classroomWithBookings = Arrays.asList(objectMapper.readValue(contentAsString, ClassroomWithBookings[].class));
-
-        assert classroomWithBookings.contains(cWB);
+        List<ClassroomWithBookings> listClassroomWithBookings = Arrays.asList(objectMapper.readValue(contentAsString, ClassroomWithBookings[].class));
+        LocalDate startDate = LocalDate.ofYearDay(year, 1).with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY)).plusWeeks(weekNumber - 1);
+        LocalDate endDate = startDate.plusDays(6);
+        assert listClassroomWithBookings
+                .stream()
+                .noneMatch(classroomWithBookings ->
+                        classroomWithBookings
+                                .getBookings()
+                                .stream()
+                                .noneMatch(booking ->
+                                        booking.getBookingDate().isBefore(endDate) && booking.getBookingDate().isAfter(startDate))
+                );
     }
 
     @Test
