@@ -18,7 +18,9 @@ import com.pfr.pfr.slot.SlotService;
 import com.pfr.pfr.user.UserService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.management.InstanceAlreadyExistsException;
@@ -87,35 +89,50 @@ public class BookingService {
     public Booking updateBooking(int bookingId, BookingDTO bookingDTO) {
         Optional<Booking> bookingToUpdate = bookingRepository.findById(bookingId);
 
-        boolean changeOfDate = true;
-        boolean changeOfSlot = true;
-        boolean changeOfClassroom = true;
+        if (bookingToUpdate.isPresent()) {
 
-        if (bookingToUpdate.isPresent()){
+            // Les paramètres du DTO qui sont vides ou à null du DTO sont alimentés par ceux du bookingToUpdate (celui enregistré qu'on veut modifier)
+            bookingDTO.setBookingDate(Optional.ofNullable(bookingDTO.getBookingDate()).orElseGet(() -> bookingToUpdate.get().getBookingDate()));
+            bookingDTO.setSlotId(Optional.ofNullable(bookingDTO.getSlotId()).orElseGet(() -> bookingToUpdate.get().getSlotId()));
+            bookingDTO.setClassroomId(Optional.ofNullable(bookingDTO.getClassroomId()).orElseGet(() -> bookingToUpdate.get().getClassroomId()));
+            bookingDTO.setEventId(Optional.ofNullable(bookingDTO.getEventId()).orElseGet(() -> bookingToUpdate.get().getEventId()));
+            bookingDTO.setUserId(Optional.ofNullable(bookingDTO.getUserId()).orElseGet(() -> bookingToUpdate.get().getUserId()));
 
-            // Si paramètre(s) vide(s) on alimente le DTO avec les valeurs enregistrées pour les tests qui suivront
-            if (bookingDTO.getBookingDate() == null) {
-                bookingDTO.setBookingDate(bookingToUpdate.get().getBookingDate());
-                changeOfDate = false;
-            }
-            if (bookingDTO.getSlotId() == null) {
-                bookingDTO.setSlotId(bookingToUpdate.get().getSlotId());
-                changeOfSlot = false;
-            }
-            if (bookingDTO.getClassroomId() == null) {
-                bookingDTO.setClassroomId(bookingToUpdate.get().getClassroomId());
-                changeOfClassroom = false;
+            // Vérifications (capacité, slot, dispo) avant ajout
+            if (checkCapacityNeeded(bookingDTO)) {
+                if (checkBookingSlot(bookingDTO)) {
+                    if (checkNoSimilarBooking(bookingDTO)) {
+                        Booking b = bookingDTO.toEntity();
+                        bookingToUpdate.get().setBookingDate(b.getBookingDate());
+                        bookingToUpdate.get().setSlotId(b.getSlotId());
+                        bookingToUpdate.get().setClassroomId(b.getClassroomId());
+                        bookingToUpdate.get().setEventId(b.getEventId());
+                        bookingToUpdate.get().setUserId(b.getUserId());
+                        return bookingRepository.save(bookingToUpdate.get());
+                    }
+                }
             }
 
-            // Si au moins & des paramètres change on tente la sauvegarde
-            if (changeOfDate || changeOfSlot || changeOfClassroom) {
-                saveBooking(bookingDTO);
-            } else {
-                return bookingToUpdate.get();
-            }
+        } else {
+            throw new EntityNotFoundException("Booking with ID %d not found".formatted(bookingId));
         }
-
         return null;
+    }
+
+    public void deleteBooking(int bookingId) {
+        Optional<Booking> bookingToDelete = bookingRepository.findById(bookingId);
+        List<Conflict> conflictList = conflictService.getConflictsForBooking(bookingId);
+
+        if (bookingToDelete.isPresent()) {
+            if (conflictList.size() == 0) {
+                bookingRepository.deleteById(bookingId);
+            } else {
+                throw new DataIntegrityViolationException("Booking cannot be deleted because it has conflict(s)");
+            }
+
+        } else {
+            throw new EntityNotFoundException("Booking with ID %d not found".formatted(bookingId));
+        }
     }
 
     // Vérification existence du slot à la date et s'il est autorisé à la réservation
