@@ -2,7 +2,10 @@ package com.pfr.pfr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pfr.pfr.classroom.ClassroomService;
+import com.pfr.pfr.conflict.dto.ConflictDTO;
 import com.pfr.pfr.entities.*;
+import jakarta.transaction.TransactionScoped;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +103,38 @@ public class ConflictTests {
                 jason,
                 reunion);
         assert conflicts.contains(conflict);
+    }
+
+    @Test
+    @Transactional
+    void testAdd() throws Exception {
+        ConflictDTO conflictDTO = new ConflictDTO("testDeFou", 1, 1, 1);
+        String json = objectMapper.writeValueAsString(conflictDTO);
+        RequestBuilder request = MockMvcRequestBuilders.post("/api/conflict")
+                .contentType("application/json")
+                .content(json);
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        String contentAsString = mockMvc.perform(request)
+                .andExpect(resultStatus)
+                .andReturn().getResponse().getContentAsString();
+        Conflict conflict = objectMapper.readValue(contentAsString, Conflict.class);
+        assert conflict.getId() != null;
+    }
+
+    @Test
+    @Transactional
+    void testDelete() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.delete("/api/conflict/1");
+        ResultMatcher resultStatus = MockMvcResultMatchers.status().isOk();
+        mockMvc.perform(request)
+                .andExpect(resultStatus);
+
+        request = MockMvcRequestBuilders.get("/api/conflict/1");
+        resultStatus = MockMvcResultMatchers.status().isNotFound();
+
+        mockMvc.perform(request)
+                .andExpect(resultStatus);
+
     }
 }
 
